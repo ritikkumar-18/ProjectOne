@@ -1,1346 +1,2060 @@
-// import React, { useState, useEffect } from 'react';
-// import { motion, AnimatePresence } from 'framer-motion';
-// import { FaCheck, FaChevronDown, FaChevronUp, FaQuoteLeft, FaLock, FaSearch } from 'react-icons/fa';
-// import { Helmet } from 'react-helmet';
-// import { Link } from 'react-router-dom';
+// // import React, { useState } from "react";
+// // import { motion, AnimatePresence } from "framer-motion";
+// // import toast, { Toaster } from "react-hot-toast";
+// // import { FaCheckCircle, FaTimes, FaCreditCard, FaWallet, FaUniversity, FaMoneyBillWave } from "react-icons/fa";
 
-// const Subscriptions = () => {
-//   const [isYearly, setIsYearly] = useState(localStorage.getItem('billingCycle') === 'yearly');
-//   const [currency, setCurrency] = useState('USD');
-//   const [openFaq, setOpenFaq] = useState(null);
-//   const [faqSearch, setFaqSearch] = useState('');
-//   const [currentPlan, setCurrentPlan] = useState(localStorage.getItem('currentPlan') || null);
-//   const [showComparison, setShowComparison] = useState(false);
-//   const [testimonialIndex, setTestimonialIndex] = useState(0);
+// // // Subscription Plan Component
+// // const SubscriptionPlan = ({ plan, onSelect }) => (
+// //   <motion.div
+// //     initial={{ opacity: 0, y: 50 }}
+// //     animate={{ opacity: 1, y: 0 }}
+// //     transition={{ duration: 0.5 }}
+// //     className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex-1 mx-4 hover:shadow-xl transition-shadow duration-300"
+// //   >
+// //     <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
+// //     <p className="text-4xl font-extrabold text-blue-600 dark:text-blue-400 mb-4">
+// //       ₹{plan.price} <span className="text-lg font-normal text-gray-500 dark:text-gray-400">/{plan.duration}</span>
+// //     </p>
+// //     <ul className="space-y-3 mb-6">
+// //       {plan.features.map((feature, index) => (
+// //         <motion.li
+// //           key={index}
+// //           initial={{ opacity: 0, x: -20 }}
+// //           animate={{ opacity: 1, x: 0 }}
+// //           transition={{ delay: index * 0.1 }}
+// //           className="flex items-center text-gray-700 dark:text-gray-300"
+// //         >
+// //           <FaCheckCircle className="text-green-500 mr-2" />
+// //           {feature}
+// //         </motion.li>
+// //       ))}
+// //     </ul>
+// //     <motion.button
+// //       whileHover={{ scale: 1.05 }}
+// //       whileTap={{ scale: 0.95 }}
+// //       onClick={() => onSelect(plan)}
+// //       className="w-full py-3 bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600 text-white rounded-lg font-medium transition-all duration-200 shadow-md"
+// //     >
+// //       Buy Now
+// //     </motion.button>
+// //   </motion.div>
+// // );
 
-//   // Exchange rates (mock, replace with API in production)
-//   const exchangeRates = { USD: 1, EUR: 0.92, GBP: 0.79 };
+// // // Payment Gateway Modal Component
+// // const PaymentGatewayModal = ({ isOpen, onClose, plan }) => {
+// //   const [selectedOption, setSelectedOption] = useState("UPI");
+// //   const [upiId, setUpiId] = useState("");
 
-//   // Subscription plans data
-//   const plans = [
-//     {
-//       name: 'Starter',
-//       monthlyPrice: { USD: 0, EUR: 0, GBP: 0 },
-//       yearlyPrice: { USD: 0, EUR: 0, GBP: 0 },
-//       description: 'For individuals and small projects.',
-//       features: [
-//         '5GB Storage',
-//         'Community Support',
-//         '100 API Calls/Day',
-//         'Basic Analytics',
-//       ],
-//       cta: 'Get Started',
-//       ctaLink: '/signup',
-//       badge: null,
-//       featureMetrics: { storage: 5, api: 100 },
-//     },
-//     {
-//       name: 'Pro',
-//       monthlyPrice: { USD: 15, EUR: 14, GBP: 12 },
-//       yearlyPrice: { USD: 144, EUR: 132, GBP: 114 }, // ~20% discount
-//       description: 'For growing businesses.',
-//       features: [
-//         '50GB Storage',
-//         'Priority Email Support',
-//         '10,000 API Calls/Day',
-//         'Advanced Analytics',
-//         'Team Collaboration',
-//       ],
-//       cta: 'Get Started',
-//       ctaLink: '/signup',
-//       badge: 'Best Value',
-//       featureMetrics: { storage: 50, api: 10000 },
-//     },
-//     {
-//       name: 'Team',
-//       monthlyPrice: { USD: 49, EUR: 45, GBP: 39 },
-//       yearlyPrice: { USD: 470, EUR: 432, GBP: 372 },
-//       description: 'For mid-sized teams.',
-//       features: [
-//         '200GB Storage',
-//         '24/7 Email & Chat Support',
-//         '50,000 API Calls/Day',
-//         'Custom Analytics',
-//         'SSO Integration',
-//       ],
-//       cta: 'Get Started',
-//       ctaLink: '/signup',
-//       badge: 'Best for Teams',
-//       featureMetrics: { storage: 200, api: 50000 },
-//     },
-//     {
-//       name: 'Enterprise',
-//       monthlyPrice: null,
-//       yearlyPrice: null,
-//       description: 'For large organizations.',
-//       features: [
-//         'Unlimited Storage',
-//         '24/7 Dedicated Support',
-//         'Unlimited API Calls',
-//         'Advanced Security',
-//         'Custom Integrations',
-//         '99.9% Uptime SLA',
-//       ],
-//       cta: 'Contact Sales',
-//       ctaLink: '/contact',
-//       badge: 'Custom',
-//       featureMetrics: { storage: 1000, api: 1000000 },
-//     },
-//   ];
+// //   const handlePayment = () => {
+// //     if (selectedOption === "UPI" && !upiId) {
+// //       toast.error("Please enter a valid UPI ID");
+// //       return;
+// //     }
+// //     // Simulate payment processing
+// //     setTimeout(() => {
+// //       toast.success(`Payment of ₹${plan.price} for ${plan.name} successful!`, {
+// //         style: { background: "#10B981", color: "#fff" },
+// //       });
+// //       onClose();
+// //     }, 1000);
+// //   };
 
-//   // FAQ data
-//   const faqs = [
-//     {
-//       question: 'Can I upgrade or downgrade my plan?',
-//       answer: 'Yes, you can change your plan anytime from your account dashboard. Changes take effect immediately.',
-//     },
-//     {
-//       question: 'What is the free trial policy?',
-//       answer: 'Pro and Team plans include a 14-day free trial. No credit card required during the trial.',
-//     },
-//     {
-//       question: 'Which payment methods are accepted?',
-//       answer: 'We accept credit cards, PayPal, and bank transfers for Enterprise plans.',
-//     },
-//     {
-//       question: 'Are there refunds for cancellations?',
-//       answer: 'Monthly plans include a 30-day money-back guarantee. Yearly plans are non-refundable after 30 days.',
-//     },
-//     {
-//       question: 'Does Enterprise include custom integrations?',
-//       answer: 'Yes, Enterprise plans offer tailored integrations with your existing systems.',
-//     },
-//   ];
+// //   const paymentOptions = [
+// //     { name: "UPI", icon: "💳", apps: ["PhonePe", "G Pay", "Paytm", "BHIM"] },
+// //     { name: "Wallets", icon: <FaWallet className="text-gray-700 dark:text-gray-300" />, price: plan.price },
+// //     { name: "Debit/Credit Cards", icon: <FaCreditCard className="text-gray-700 dark:text-gray-300" />, price: plan.price },
+// //     { name: "Netbanking", icon: <FaUniversity className="text-gray-700 dark:text-gray-300" />, price: plan.price },
+// //     { name: "Bank Transfer", icon: "🏦", price: plan.price },
+// //   ];
 
-//   // Testimonials data
-//   const testimonials = [
-//     {
-//       quote: 'TechTrend’s Pro plan streamlined our development with its robust API and analytics.',
-//       author: 'Jane Doe, CTO at InnovateCorp',
-//       logo: 'https://via.placeholder.com/100x40?text=InnovateCorp',
-//     },
-//     {
-//       quote: 'The Team plan’s SSO and support saved us countless hours.',
-//       author: 'John Smith, CEO at ScaleTech',
-//       logo: 'https://via.placeholder.com/100x40?text=ScaleTech',
-//     },
-//     {
-//       quote: 'Enterprise support is top-notch, with custom solutions for our needs.',
-//       author: 'Emily Chen, VP at GlobalSys',
-//       logo: 'https://via.placeholder.com/100x40?text=GlobalSys',
-//     },
-//   ];
+// //   return (
+// //     <AnimatePresence>
+// //       {isOpen && (
+// //         <motion.div
+// //           initial={{ opacity: 0 }}
+// //           animate={{ opacity: 1 }}
+// //           exit={{ opacity: 0 }}
+// //           transition={{ duration: 0.3 }}
+// //           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 "
+// //         >
+// //           <motion.div
+// //             initial={{ scale: 0.9, opacity: 0 }}
+// //             animate={{ scale: 1, opacity: 1 }}
+// //             exit={{ scale: 0.9, opacity: 0 }}
+// //             transition={{ duration: 0.3 }}
+// //             className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 w-full max-w-md relative"
+// //           >
+// //             {/* Close Button */}
+// //             <motion.button
+// //               whileHover={{ scale: 1.1 }}
+// //               whileTap={{ scale: 0.9 }}
+// //               onClick={onClose}
+// //               className="absolute top-2 right-2 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100"
+// //               aria-label="Close payment modal"
+// //             >
+// //               <FaTimes className="h-6 w-6" />
+// //             </motion.button>
 
-//   // Persist billing cycle and plan selection
-//   useEffect(() => {
-//     localStorage.setItem('billingCycle', isYearly ? 'yearly' : 'monthly');
-//     localStorage.setItem('currentPlan', currentPlan || '');
-//   }, [isYearly, currentPlan]);
+// //             {/* Header */}
+// //             <div className="flex items-center justify-between mb-4">
+// //               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Payment Options</h2>
+// //               <p className="text-lg font-semibold text-gray-900 dark:text-white">₹{plan.price}</p>
+// //             </div>
 
-//   // Auto-rotate testimonials
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setTestimonialIndex((prev) => (prev + 1) % testimonials.length);
-//     }, 5000); // Rotate every 5 seconds
-//     return () => clearInterval(interval);
-//   }, []);
+// //             {/* Payment Options */}
+// //             <div className="space-y-3 mb-4">
+// //               {paymentOptions.map((option) => (
+// //                 <motion.div
+// //                   key={option.name}
+// //                   whileHover={{ scale: 1.02 }}
+// //                   className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-colors duration-200 ${
+// //                     selectedOption === option.name
+// //                       ? "bg-blue-100 dark:bg-blue-900 border border-blue-500"
+// //                       : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+// //                   }`}
+// //                   onClick={() => setSelectedOption(option.name)}
+// //                 >
+// //                   <div className="flex items-center">
+// //                     <span className="text-2xl mr-3">{option.icon}</span>
+// //                     <div>
+// //                       <p className="text-gray-900 dark:text-white font-medium">{option.name}</p>
+// //                       {option.apps && (
+// //                         <div className="flex space-x-2 mt-1">
+// //                           {option.apps.map((app) => (
+// //                             <span key={app} className="text-sm text-gray-500 dark:text-gray-400">
+// //                               {app}
+// //                             </span>
+// //                           ))}
+// //                         </div>
+// //                       )}
+// //                       {option.emi && (
+// //                         <p className="text-sm text-gray-500 dark:text-gray-400">
+// //                           ₹{option.price} Now {option.emi}
+// //                         </p>
+// //                       )}
+// //                     </div>
+// //                   </div>
+// //                   {!option.apps && !option.emi && (
+// //                     <p className="text-gray-900 dark:text-white font-medium">₹{option.price}</p>
+// //                   )}
+// //                 </motion.div>
+// //               ))}
+// //             </div>
 
-//   // Filter FAQs
-//   const filteredFaqs = faqs.filter(
-//     (faq) =>
-//       faq.question.toLowerCase().includes(faqSearch.toLowerCase()) ||
-//       faq.answer.toLowerCase().includes(faqSearch.toLowerCase())
-//   );
+// //             {/* UPI ID Input */}
+// //             {selectedOption === "UPI" && (
+// //               <motion.div
+// //                 initial={{ height: 0, opacity: 0 }}
+// //                 animate={{ height: "auto", opacity: 1 }}
+// //                 transition={{ duration: 0.3 }}
+// //                 className="mb-4"
+// //               >
+// //                 <div className="relative">
+// //                   <input
+// //                     type="text"
+// //                     value={upiId}
+// //                     onChange={(e) => setUpiId(e.target.value)}
+// //                     placeholder="Enter your UPI ID"
+// //                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+// //                     aria-label="UPI ID input"
+// //                   />
+// //                 </div>
+// //                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+// //                   You will receive a payment request on your UPI app
+// //                 </p>
+// //               </motion.div>
+// //             )}
 
-//   // Toggle FAQ
-//   const toggleFaq = (index) => {
-//     setOpenFaq(openFaq === index ? null : index);
-//   };
+// //             {/* Pay Button */}
+// //             <motion.button
+// //               whileHover={{ scale: 1.05 }}
+// //               whileTap={{ scale: 0.95 }}
+// //               onClick={handlePayment}
+// //               className="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-all duration-200 shadow-md"
+// //               aria-label={`Pay ₹${plan.price}`}
+// //             >
+// //               Pay ₹{plan.price}
+// //             </motion.button>
+// //           </motion.div>
+// //         </motion.div>
+// //       )}
+// //     </AnimatePresence>
+// //   );
+// // };
 
-//   // Animation variants
-//   const cardVariants = {
-//     hidden: { opacity: 0, y: 20 },
-//     visible: (i) => ({
-//       opacity: 1,
-//       y: 0,
-//       transition: { delay: i * 0.2, duration: 0.5 },
-//     }),
-//   };
+// // // Main Subscriptions Page Component
+// // const Subscriptions = () => {
+// //   const [selectedPlan, setSelectedPlan] = useState(null);
 
-//   const testimonialVariants = {
-//     enter: { opacity: 0, x: 100 },
-//     center: { opacity: 1, x: 0 },
-//     exit: { opacity: 0, x: -100 },
-//   };
+// //   const plans = [
+// //     {
+// //       name: "Basic Plan",
+// //       price: 499,
+// //       duration: "month",
+// //       features: ["Access to Core Features", "Email Support", "5 Projects", "Basic Analytics"],
+// //     },
+// //     {
+// //       name: "Pro Plan",
+// //       price: 999,
+// //       duration: "month",
+// //       features: ["All Basic Features", "Priority Support", "20 Projects", "Advanced Analytics", "API Access"],
+// //     },
+// //     {
+// //       name: "Enterprise Plan",
+// //       price: 1999,
+// //       duration: "month",
+// //       features: ["All Pro Features", "Dedicated Support", "Unlimited Projects", "Custom Integrations", "Premium Analytics"],
+// //     },
+// //   ];
 
-//   return (
-//     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-//       <Helmet>
-//         <title>Subscriptions - TechTrend</title>
-//         <meta
-//           name="description"
-//           content="Choose a TechTrend subscription plan to unlock powerful tech solutions for individuals, teams, and enterprises."
-//         />
-//         <meta property="og:title" content="TechTrend Subscriptions" />
-//         <meta
-//           property="og:description"
-//           content="Explore our flexible plans with advanced features, from free to enterprise-grade solutions."
-//         />
-//       </Helmet>
+// //   return (
+// //     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+// //       <Toaster position="top-right" />
+// //       <motion.div
+// //         initial={{ opacity: 0 }}
+// //         animate={{ opacity: 1 }}
+// //         transition={{ duration: 0.5 }}
+// //         className="max-w-7xl mx-auto"
+// //       >
+// //         {/* Header */}
+// //         <div className="text-center mb-12">
+// //           <h1 className="text-5xl font-extrabold text-gray-900 dark:text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
+// //             Choose Your Subscription Plan
+// //           </h1>
+// //           <p className="text-lg text-gray-600 dark:text-gray-400">
+// //             Unlock the full potential of our tech platform with a plan that suits your needs.
+// //           </p>
+// //         </div>
 
-//       {/* Header Section */}
-//       <div className="text-center mb-12">
-//         <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-//           Find the Perfect Plan
-//         </h1>
-//         <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-//           Power your projects with TechTrend’s flexible subscription plans, designed for startups to
-//           enterprises.
-//         </p>
-//       </div>
+// //         {/* Plans */}
+// //         <div className="flex flex-col md:flex-row gap-6">
+// //           {plans.map((plan) => (
+// //             <SubscriptionPlan key={plan.name} plan={plan} onSelect={setSelectedPlan} />
+// //           ))}
+// //         </div>
 
-//       {/* Pricing and Currency Controls */}
-//       <div className="flex flex-col sm:flex-row justify-center items-center mb-8 space-y-4 sm:space-y-0 sm:space-x-4">
-//         <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-1 flex items-center">
-//           <button
-//             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-//               !isYearly
-//                 ? 'bg-blue-600 text-white'
-//                 : 'bg-transparent text-gray-700 dark:text-gray-300'
-//             }`}
-//             onClick={() => setIsYearly(false)}
-//             aria-label="Monthly billing"
-//           >
-//             Monthly
-//           </button>
-//           <button
-//             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-//               isYearly
-//                 ? 'bg-blue-600 text-white'
-//                 : 'bg-transparent text-gray-700 dark:text-gray-300'
-//             }`}
-//             onClick={() => setIsYearly(true)}
-//             aria-label="Yearly billing"
-//           >
-//             Yearly <span className="text-xs ml-1">(Save up to 20%)</span>
-//           </button>
-//         </div>
-//         <select
-//           value={currency}
-//           onChange={(e) => setCurrency(e.target.value)}
-//           className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm"
-//           aria-label="Select currency"
-//         >
-//           <option value="USD">USD</option>
-//           <option value="EUR">EUR</option>
-//           <option value="GBP">GBP</option>
-//         </select>
-//       </div>
+// //         {/* Payment Gateway Modal */}
+// //         <PaymentGatewayModal
+// //           isOpen={!!selectedPlan}
+// //           onClose={() => setSelectedPlan(null)}
+// //           plan={selectedPlan || { price: 0, name: "" }}
+// //         />
+// //       </motion.div>
+// //     </div>
+// //   );
+// // };
 
-//       {/* Plans Grid */}
-//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-//         {plans.map((plan, index) => (
-//           <motion.div
-//             key={plan.name}
-//             custom={index}
-//             initial="hidden"
-//             animate="visible"
-//             variants={cardVariants}
-//             className={`relative bg-white dark:bg-gray-800/80 backdrop-blur-md rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-transform duration-300 hover:scale-105 ${
-//               plan.badge ? 'ring-2 ring-blue-600 dark:ring-blue-500' : ''
-//             } ${currentPlan === plan.name ? 'ring-2 ring-green-500' : ''}`}
-//           >
-//             {/* Badge */}
-//             {plan.badge && (
-//               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
-//                 {plan.badge}
-//               </div>
-//             )}
-//             {/* Plan Name */}
-//             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-//               {plan.name}
-//             </h2>
-//             {/* Price */}
-//             <div className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-//               {plan.monthlyPrice === null ? (
-//                 'Custom'
-//               ) : (
-//                 <>
-//                   {currency}{' '}
-//                   {Math.round(
-//                     (isYearly ? plan.yearlyPrice[currency] : plan.monthlyPrice[currency]) *
-//                       exchangeRates[currency]
-//                   )}
-//                   <span className="text-base font-normal text-gray-600 dark:text-gray-400">
-//                     /{isYearly ? 'year' : 'month'}
-//                   </span>
-//                   {isYearly && (
-//                     <span className="text-xs text-green-600 ml-2">
-//                       Save{' '}
-//                       {Math.round(
-//                         (plan.monthlyPrice[currency] * 12 - plan.yearlyPrice[currency]) /
-//                           (plan.monthlyPrice[currency] * 12) *
-//                           100
-//                       )}
-//                       %
-//                     </span>
-//                   )}
-//                 </>
-//               )}
-//             </div>
-//             {/* Description */}
-//             <p className="text-gray-600 dark:text-gray-400 mb-6">{plan.description}</p>
-//             {/* Feature Metrics */}
-//             <div className="mb-6">
-//               <div className="mb-4">
-//                 <span className="text-sm text-gray-700 dark:text-gray-300">Storage</span>
-//                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-//                   <motion.div
-//                     className="bg-blue-600 h-2 rounded-full"
-//                     initial={{ width: 0 }}
-//                     animate={{ width: `${(plan.featureMetrics.storage / 1000) * 100}%` }}
-//                     transition={{ duration: 1 }}
-//                   />
-//                 </div>
-//               </div>
-//               <div>
-//                 <span className="text-sm text-gray-700 dark:text-gray-300">API Calls</span>
-//                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-//                   <motion.div
-//                     className="bg-blue-600 h-2 rounded-full"
-//                     initial={{ width: 0 }}
-//                     animate={{ width: `${(plan.featureMetrics.api / 1000000) * 100}%` }}
-//                     transition={{ duration: 1 }}
-//                   />
-//                 </div>
-//               </div>
-//             </div>
-//             {/* Features */}
-//             <ul className="space-y-3 mb-6">
-//               {plan.features.map((feature) => (
-//                 <li key={feature} className="flex items-center text-gray-700 dark:text-gray-300">
-//                   <FaCheck className="text-green-500 mr-2" />
-//                   {feature}
-//                 </li>
-//               ))}
-//             </ul>
-//             {/* CTA Button */}
-//             <Link
-//               to={plan.ctaLink}
-//               className={`block w-full text-center py-3 rounded-md font-medium transition-colors ${
-//                 currentPlan === plan.name
-//                   ? 'bg-green-500 text-white hover:bg-green-600'
-//                   : 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
-//               }`}
-//               aria-label={`Get started with ${plan.name} plan`}
-//               onClick={() => setCurrentPlan(plan.name)}
-//             >
-//               {currentPlan === plan.name ? 'Your Plan' : plan.cta}
-//             </Link>
-//           </motion.div>
-//         ))}
-//       </div>
-
-//       {/* Sticky CTA for Mobile */}
-//       <div className="fixed bottom-0 left-0 right-0 bg-blue-600 text-white p-4 sm:hidden z-50">
-//         <Link
-//           to="/signup"
-//           className="block text-center font-medium py-2 rounded-md bg-white text-blue-600 hover:bg-gray-100"
-//         >
-//           Choose a Plan
-//         </Link>
-//       </div>
-
-//       {/* Comparison Table */}
-//       <div className="mt-16">
-//         <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
-//           Compare Plans
-//         </h2>
-//         <button
-//           className="sm:hidden bg-blue-600 text-white px-4 py-2 rounded-md mb-4"
-//           onClick={() => setShowComparison(!showComparison)}
-//           aria-expanded={showComparison}
-//         >
-//           {showComparison ? 'Hide Comparison' : 'Show Comparison'}
-//         </button>
-//         <div className={`${showComparison ? 'block' : 'hidden'} sm:block overflow-x-auto`}>
-//           <table className="w-full text-left border-collapse">
-//             <thead>
-//               <tr className="bg-gray-100 dark:bg-gray-800">
-//                 <th className="p-4 text-gray-900 dark:text-gray-100">Feature</th>
-//                 {plans.map((plan) => (
-//                   <th key={plan.name} className="p-4 text-gray-900 dark:text-gray-100">
-//                     {plan.name}
-//                   </th>
-//                 ))}
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {[
-//                 'Storage',
-//                 'Support',
-//                 'API Calls/Day',
-//                 'Analytics',
-//                 'Collaboration',
-//                 'Security',
-//                 'Integrations',
-//                 'Uptime SLA',
-//               ].map((feature) => (
-//                 <tr key={feature} className="border-b dark:border-gray-700">
-//                   <td className="p-4 text-gray-700 dark:text-gray-300">{feature}</td>
-//                   {plans.map((plan) => (
-//                     <td key={plan.name} className="p-4 text-gray-700 dark:text-gray-300">
-//                       {plan.features.some((f) => f.toLowerCase().includes(feature.toLowerCase()))
-//                         ? plan.features.find((f) => f.toLowerCase().includes(feature.toLowerCase()))
-//                         : '–'}
-//                     </td>
-//                   ))}
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       </div>
-
-//       {/* FAQ Section */}
-//       <div className="mt-16">
-//         <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
-//           Frequently Asked Questions
-//         </h2>
-//         <div className="max-w-3xl mx-auto mb-6">
-//           <div className="relative">
-//             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-//             <input
-//               type="text"
-//               placeholder="Search FAQs..."
-//               value={faqSearch}
-//               onChange={(e) => setFaqSearch(e.target.value)}
-//               className="w-full pl-10 pr-4 py-2 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-//               aria-label="Search FAQs"
-//             />
-//           </div>
-//         </div>
-//         <div className="space-y-4 max-w-3xl mx-auto">
-//           {filteredFaqs.length > 0 ? (
-//             filteredFaqs.map((faq, index) => (
-//               <div
-//                 key={index}
-//                 className="bg-white dark:bg-gray-800/80 backdrop-blur-md rounded-lg shadow-md p-4"
-//               >
-//                 <button
-//                   className="w-full flex justify-between items-center text-left text-lg font-semibold text-gray-900 dark:text-gray-100"
-//                   onClick={() => toggleFaq(index)}
-//                   aria-expanded={openFaq === index}
-//                   aria-controls={`faq-${index}`}
-//                 >
-//                   {faq.question}
-//                   {openFaq === index ? (
-//                     <FaChevronUp className="text-blue-600" />
-//                   ) : (
-//                     <FaChevronDown className="text-blue-600" />
-//                   )}
-//                 </button>
-//                 {openFaq === index && (
-//                   <div
-//                     id={`faq-${index}`}
-//                     className="mt-2 text-gray-600 dark:text-gray-400"
-//                   >
-//                     {faq.answer}
-//                   </div>
-//                 )}
-//               </div>
-//             ))
-//           ) : (
-//             <p className="text-center text-gray-600 dark:text-gray-400">
-//               No FAQs match your search.
-//             </p>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Testimonials Section */}
-//       <div className="mt-16">
-//         <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
-//           Trusted by Industry Leaders
-//         </h2>
-//         <div className="relative max-w-4xl mx-auto overflow-hidden">
-//           <AnimatePresence>
-//             <motion.div
-//               key={testimonialIndex}
-//               variants={testimonialVariants}
-//               initial="enter"
-//               animate="center"
-//               exit="exit"
-//               transition={{ duration: 0.5 }}
-//               className="bg-white dark:bg-gray-800/80 backdrop-blur-md rounded-lg shadow-md p-6 text-center"
-//             >
-//               <img
-//                 src={testimonials[testimonialIndex].logo}
-//                 alt={`${testimonials[testimonialIndex].author} logo`}
-//                 className="h-10 mx-auto mb-4"
-//               />
-//               <FaQuoteLeft className="text-blue-600 mb-4 mx-auto" size={24} />
-//               <p className="text-gray-600 dark:text-gray-300 mb-4">
-//                 {testimonials[testimonialIndex].quote}
-//               </p>
-//               <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-//                 {testimonials[testimonialIndex].author}
-//               </p>
-//             </motion.div>
-//           </AnimatePresence>
-//           <div className="flex justify-center mt-4">
-//             {testimonials.map((_, i) => (
-//               <button
-//                 key={i}
-//                 className={`w-3 h-3 rounded-full mx-1 ${
-//                   i === testimonialIndex ? 'bg-blue-600' : 'bg-gray-300'
-//                 }`}
-//                 onClick={() => setTestimonialIndex(i)}
-//                 aria-label={`Go to testimonial ${i + 1}`}
-//               />
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Trust Signals */}
-//       <div className="mt-16 text-center">
-//         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-//           Secure and Compliant
-//         </h2>
-//         <p className="text-gray-600 dark:text-gray-300 mb-6">
-//           Trusted by over 10,000 businesses worldwide.
-//         </p>
-//         <div className="flex flex-wrap justify-center gap-6">
-//           <div className="flex items-center text-gray-700 dark:text-gray-300">
-//             <FaLock className="mr-2 text-blue-600" />
-//             GDPR Compliant
-//           </div>
-//           <div className="flex items-center text-gray-700 dark:text-gray-300">
-//             <FaLock className="mr-2 text-blue-600" />
-//             ISO 27001 Certified
-//           </div>
-//           <div className="flex items-center text-gray-700 dark:text-gray-300">
-//             <FaLock className="mr-2 text-blue-600" />
-//             SOC 2 Type II
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Subscriptions;
-"use client"
-
-import { useState, useEffect, useRef } from "react"
+// // export default Subscriptions;
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { toast, Toaster } from "react-hot-toast"
 import {
   Check,
   X,
-  ChevronDown,
-  ChevronUp,
-  Quote,
-  Lock,
-  Search,
   CreditCard,
-  CheckCircle,
-  ArrowRight,
-  Star,
-  Shield,
-  Zap,
+  Wallet,
+  Building,
+  DollarSign,
+  ShieldCheck,
+  Clock,
+  Award,
+  Sparkles,
+  Rocket,
   Users,
   Database,
-  BarChart,
+  Cloud,
   Headphones,
+  ChevronRight,
+  ChevronDown,
+  Lock,
+  AlertCircle,
+  CheckCircle,
+  Smartphone,
+  ArrowRight,
+  Star,
+  Zap,
+  Shield,
   Layers,
-  Clock,
+  Briefcase,
+  Globe,
+  HelpCircle,
+  Tag,
+  Percent,
 } from "lucide-react"
 
-const Subscriptions = () => {
-  // State management
-  const [isYearly, setIsYearly] = useState(true)
-  const [currency, setCurrency] = useState("USD")
-  const [openFaq, setOpenFaq] = useState(null)
-  const [faqSearch, setFaqSearch] = useState("")
-  const [selectedPlan, setSelectedPlan] = useState(null)
-  const [showComparison, setShowComparison] = useState(false)
-  const [testimonialIndex, setTestimonialIndex] = useState(0)
-  const [showPaymentModal, setShowPaymentModal] = useState(false)
-  const [paymentStep, setPaymentStep] = useState(1)
-  const [paymentMethod, setPaymentMethod] = useState("card")
+
+// Subscription Plan Component
+const SubscriptionPlan = ({ plan, onSelect, isPopular, isAnnual }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden flex-1 min-w-[280px] hover:shadow-xl transition-shadow duration-300 relative ${
+        isPopular ? "border-2 border-blue-500 dark:border-blue-400" : "border border-gray-200 dark:border-gray-700"
+      }`}
+    >
+      {isPopular && (
+        <div className="absolute top-0 right-0">
+          <div className="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">MOST POPULAR</div>
+        </div>
+      )}
+
+      <div className="p-6">
+        <div className="flex items-center mb-4">
+          <div
+            className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${
+              plan.color === "blue"
+                ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
+                : plan.color === "purple"
+                  ? "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400"
+                  : "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400"
+            }`}
+          >
+            {plan.icon}
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{plan.name}</h3>
+        </div>
+
+        <div className="mb-4">
+          <div className="flex items-baseline">
+            <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
+              ₹{plan.price.toLocaleString()}
+            </span>
+            <span className="text-lg font-normal text-gray-500 dark:text-gray-400 ml-2">
+              /{isAnnual ? "year" : "month"}
+            </span>
+          </div>
+          {isAnnual && plan.discount && (
+            <div className="mt-1 inline-flex items-center bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 px-2 py-1 rounded-full text-xs font-medium">
+              <Percent className="h-3 w-3 mr-1" />
+              {plan.discount}
+            </div>
+          )}
+          <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm">{plan.description}</p>
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 my-4 pt-4">
+          <ul className="space-y-3">
+            {plan.features.map((feature, index) => (
+              <motion.li
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex items-start text-gray-700 dark:text-gray-300"
+              >
+                <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+                <span className="text-sm">{feature}</span>
+              </motion.li>
+            ))}
+            {plan.notIncluded?.map((feature, index) => (
+              <motion.li
+                key={`not-${index}`}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: (plan.features.length + index) * 0.1 }}
+                className="flex items-start text-gray-400 dark:text-gray-500"
+              >
+                <X className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                <span className="text-sm">{feature}</span>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
+
+        <motion.button
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => onSelect(plan)}
+          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 shadow-md flex items-center justify-center ${
+            isPopular
+              ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+              : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white"
+          }`}
+        >
+          Get Started
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </motion.button>
+      </div>
+    </motion.div>
+  )
+}
+
+// UPI App Selection Component
+const UpiAppSelection = ({ selectedApp, onSelectApp }) => {
+  const upiApps = [
+    {
+      id: "phonepe",
+      name: "PhonePe",
+      icon: "https://imgs.search.brave.com/dT0xh2JIoRoq0yMYKoy2518OhHOjj9yG32bFNJNRoic/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/YnJhbmRmZXRjaC5p/by9pZGNFME9kRzhp/L3RoZW1lL2Rhcmsv/c3ltYm9sLnN2Zz9j/PTFieGlkNjRNdXA3/YWN6ZXdTQVlNWCZ0/PTE2NjgwNzUxOTA1/ODM",
+      color: "#5F259F",
+    },
+    {
+      id: "gpay",
+      name: "Google Pay",
+      icon: "https://imgs.search.brave.com/xxxnyy_HWO8AdF5ZlNCZG_b0xl5cvaChcP0pofxJW8E/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bG9nby53aW5lL2Ev/bG9nby9Hb29nbGVf/UGF5L0dvb2dsZV9Q/YXktTG9nby53aW5l/LnN2Zw",
+      color: "#4285F4",
+    },
+    {
+      id: "paytm",
+      name: "Paytm",
+      icon: "https://imgs.search.brave.com/C_0XNC5c91Ud6rfNUeiZQptlku1FjAFQBLoH8ybUSig/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bG9nby53aW5lL2Ev/bG9nby9QYXl0bS9Q/YXl0bS1Mb2dvLndp/bmUuc3Zn",
+      color: "#00BAF2",
+    },
+    {
+      id: "bhim",
+      name: "BHIM",
+      icon: "https://imgs.search.brave.com/tU2uABL3iAW6LS6w044l4OoLHENg0GUECrEtBDy-6Dw/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly91eHdp/bmcuY29tL3dwLWNv/bnRlbnQvdGhlbWVz/L3V4d2luZy9kb3du/bG9hZC9icmFuZHMt/YW5kLXNvY2lhbC1t/ZWRpYS9iaGltLXVw/aS1pY29uLnBuZw",
+      color: "#F47920",
+    },
+  ]
+
+  return (
+    <div className="grid grid-cols-4 gap-4 mb-6">
+      {upiApps.map((app) => (
+        <div
+          key={app.id}
+          className={`flex flex-col items-center cursor-pointer ${
+            selectedApp === app.id ? "scale-110" : ""
+          } transition-transform duration-200`}
+          onClick={() => onSelectApp(app.id)}
+        >
+          <div
+            className={`w-14 h-14 rounded-lg flex items-center justify-center mb-2 p-2 ${
+              selectedApp === app.id
+                ? "ring-2 ring-blue-500 ring-offset-2"
+                : "border border-gray-200 dark:border-gray-700"
+            }`}
+            style={{ backgroundColor: "white" }}
+          >
+            <img src={app.icon || "/placeholder.svg"} alt={app.name} className="max-w-full max-h-full object-contain" />
+          </div>
+          <span className="text-xs text-gray-700 dark:text-gray-300">{app.name}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// UPI PIN Input Component
+const UpiPinInput = ({ onPinComplete }) => {
+  const [pin, setPin] = useState(["", "", "", ""])
+  const [isPinComplete, setIsPinComplete] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  const handlePinChange = (index, value) => {
+    if (value === "" || /^[0-9]$/.test(value)) {
+      const newPin = [...pin]
+      newPin[index] = value
+      setPin(newPin)
+
+      // Auto-focus next input
+      if (value !== "" && index < 3) {
+        document.getElementById(`pin-${index + 1}`).focus()
+      }
+
+      // Check if PIN is complete
+      setIsPinComplete(newPin.every((digit) => digit !== ""))
+    }
+  }
+
+  const handleSubmit = () => {
+    if (!isPinComplete) return
+
+    setIsProcessing(true)
+
+    // Simulate PIN verification
+    setTimeout(() => {
+      setIsProcessing(false)
+      setIsSuccess(true)
+
+      // Notify parent component
+      setTimeout(() => {
+        onPinComplete()
+      }, 1000)
+    }, 1500)
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="text-center mb-2">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white">Enter UPI PIN</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Please enter your 4-digit UPI PIN to authorize payment
+        </p>
+      </div>
+
+      <div className="flex justify-center space-x-3 mb-4">
+        {pin.map((digit, index) => (
+          <input
+            key={index}
+            id={`pin-${index}`}
+            type="password"
+            value={digit}
+            onChange={(e) => handlePinChange(index, e.target.value)}
+            className="w-12 h-12 text-center text-xl font-bold border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            maxLength={1}
+            autoComplete="off"
+          />
+        ))}
+      </div>
+
+      <div className="flex justify-center">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleSubmit}
+          disabled={!isPinComplete || isProcessing || isSuccess}
+          className={`px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center ${
+            !isPinComplete
+              ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+              : isSuccess
+                ? "bg-green-500 text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+        >
+          {isProcessing ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Verifying...
+            </>
+          ) : isSuccess ? (
+            <>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Verified
+            </>
+          ) : (
+            "Verify PIN"
+          )}
+        </motion.button>
+      </div>
+
+      <div className="text-center mt-4">
+        <button className="text-sm text-blue-600 dark:text-blue-400 hover:underline">Forgot UPI PIN?</button>
+      </div>
+    </div>
+  )
+}
+
+// Card Payment Component
+const CardPaymentForm = ({ onPaymentComplete }) => {
   const [cardDetails, setCardDetails] = useState({
     number: "",
     name: "",
     expiry: "",
-    cvc: "",
-  })
-  const [billingDetails, setBillingDetails] = useState({
-    email: "",
-    name: "",
-    address: "",
-    city: "",
-    zip: "",
-    country: "US",
+    cvv: "",
   })
   const [isProcessing, setIsProcessing] = useState(false)
-  const [paymentComplete, setPaymentComplete] = useState(false)
-  const [currentPlan, setCurrentPlan] = useState(null)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
-  const modalRef = useRef(null)
+  const handleChange = (e) => {
+    const { name, value } = e.target
 
-  // Check if mobile
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    checkIfMobile()
-    window.addEventListener("resize", checkIfMobile)
-
-    return () => {
-      window.removeEventListener("resize", checkIfMobile)
-    }
-  }, [])
-
-  // Exchange rates (mock, replace with API in production)
-  const exchangeRates = { USD: 1, EUR: 0.92, GBP: 0.79 }
-
-  // Currency symbols
-  const currencySymbols = { USD: "$", EUR: "€", GBP: "£" }
-
-  // Subscription plans data
-  const plans = [
-    {
-      id: "starter",
-      name: "Starter",
-      monthlyPrice: { USD: 0, EUR: 0, GBP: 0 },
-      yearlyPrice: { USD: 0, EUR: 0, GBP: 0 },
-      description: "For individuals and small projects.",
-      features: ["5GB Storage", "Community Support", "100 API Calls/Day", "Basic Analytics"],
-      notIncluded: [
-        "Priority Support",
-        "Team Collaboration",
-        "Custom Analytics",
-        "SSO Integration",
-        "Advanced Security",
-        "Custom Integrations",
-      ],
-      cta: "Get Started",
-      badge: null,
-      featureMetrics: { storage: 5, api: 100 },
-      icon: <Database className="w-6 h-6 text-gray-500" />,
-    },
-    {
-      id: "pro",
-      name: "Pro",
-      monthlyPrice: { USD: 15, EUR: 14, GBP: 12 },
-      yearlyPrice: { USD: 144, EUR: 132, GBP: 114 }, // ~20% discount
-      description: "For growing businesses.",
-      features: [
-        "50GB Storage",
-        "Priority Email Support",
-        "10,000 API Calls/Day",
-        "Advanced Analytics",
-        "Team Collaboration",
-      ],
-      notIncluded: ["SSO Integration", "Advanced Security", "Custom Integrations"],
-      cta: "Get Started",
-      badge: "Most Popular",
-      featureMetrics: { storage: 50, api: 10000 },
-      icon: <Zap className="w-6 h-6 text-cyan-500" />,
-    },
-    {
-      id: "team",
-      name: "Team",
-      monthlyPrice: { USD: 49, EUR: 45, GBP: 39 },
-      yearlyPrice: { USD: 470, EUR: 432, GBP: 372 },
-      description: "For mid-sized teams.",
-      features: [
-        "200GB Storage",
-        "24/7 Email & Chat Support",
-        "50,000 API Calls/Day",
-        "Custom Analytics",
-        "Team Collaboration",
-        "SSO Integration",
-      ],
-      notIncluded: ["Advanced Security", "Custom Integrations"],
-      cta: "Get Started",
-      badge: "Best for Teams",
-      featureMetrics: { storage: 200, api: 50000 },
-      icon: <Users className="w-6 h-6 text-blue-500" />,
-    },
-    {
-      id: "enterprise",
-      name: "Enterprise",
-      monthlyPrice: null,
-      yearlyPrice: null,
-      description: "For large organizations.",
-      features: [
-        "Unlimited Storage",
-        "24/7 Dedicated Support",
-        "Unlimited API Calls",
-        "Advanced Security",
-        "Custom Integrations",
-        "99.9% Uptime SLA",
-      ],
-      notIncluded: [],
-      cta: "Contact Sales",
-      badge: "Custom",
-      featureMetrics: { storage: 1000, api: 1000000 },
-      icon: <Layers className="w-6 h-6 text-purple-500" />,
-    },
-  ]
-
-  // FAQ data
-  const faqs = [
-    {
-      question: "Can I upgrade or downgrade my plan?",
-      answer:
-        "Yes, you can change your plan anytime from your account dashboard. When upgrading, you'll be charged the prorated difference for the remainder of your billing cycle. When downgrading, the new rate will apply at the start of your next billing cycle.",
-    },
-    {
-      question: "What is the free trial policy?",
-      answer:
-        "Pro and Team plans include a 14-day free trial. No credit card is required during the trial period. You'll receive a reminder 3 days before your trial ends with the option to subscribe or cancel.",
-    },
-    {
-      question: "Which payment methods are accepted?",
-      answer:
-        "We accept all major credit cards (Visa, Mastercard, American Express, Discover), PayPal, and bank transfers for Enterprise plans. All payments are processed securely through our PCI-compliant payment gateway.",
-    },
-    {
-      question: "Are there refunds for cancellations?",
-      answer:
-        "Monthly plans include a 30-day money-back guarantee. Yearly plans are non-refundable after 30 days, but you can continue using the service until the end of your billing period. Special circumstances may be considered on a case-by-case basis.",
-    },
-    {
-      question: "Does Enterprise include custom integrations?",
-      answer:
-        "Yes, Enterprise plans offer tailored integrations with your existing systems. Our solutions architects will work with your team to design and implement custom workflows that meet your specific business requirements.",
-    },
-    {
-      question: "How does billing work for team accounts?",
-      answer:
-        "Team accounts are billed based on the plan you select, not per user. This means you can add team members without increasing your subscription cost, up to the limits specified in your plan.",
-    },
-    {
-      question: "What kind of support is included?",
-      answer:
-        "Support varies by plan. Starter includes community forum access, Pro offers priority email support with 24-hour response time, Team includes 24/7 email and chat support, and Enterprise provides 24/7 dedicated support with a named account manager and phone support.",
-    },
-    {
-      question: "Is there a limit to API usage?",
-      answer:
-        "Yes, each plan has specific API call limits as outlined in the plan details. If you consistently exceed your limit, we'll notify you and suggest upgrading to a more suitable plan. Enterprise plans can be customized with higher limits based on your needs.",
-    },
-  ]
-
-  // Testimonials data
-  const testimonials = [
-    {
-      quote:
-        "The Pro plan streamlined our development with its robust API and analytics. We've seen a 40% increase in productivity since switching.",
-      author: "Jane Doe",
-      title: "CTO at InnovateCorp",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop",
-    },
-    {
-      quote:
-        "The Team plan's SSO and support saved us countless hours. The custom analytics have been invaluable for our decision-making process.",
-      author: "John Smith",
-      title: "CEO at ScaleTech",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop",
-    },
-    {
-      quote:
-        "Enterprise support is top-notch, with custom solutions for our complex needs. The dedicated account manager understands our business and provides strategic guidance.",
-      author: "Emily Chen",
-      title: "VP at GlobalSys",
-      avatar: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=100&auto=format&fit=crop",
-    },
-  ]
-
-  // Payment methods
-  const paymentMethods = [
-    { id: "card", name: "Credit Card", icon: <CreditCard className="w-5 h-5" /> },
-    { id: "paypal", name: "PayPal", icon: <div className="text-blue-600 font-bold">PayPal</div> },
-    { id: "bank", name: "Bank Transfer", icon: <div className="text-green-600 font-bold">Bank</div> },
-  ]
-
-  // Auto-rotate testimonials
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTestimonialIndex((prev) => (prev + 1) % testimonials.length)
-    }, 5000) // Rotate every 5 seconds
-    return () => clearInterval(interval)
-  }, [])
-
-  // Close modal when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        if (!isProcessing && !paymentComplete) {
-          setShowPaymentModal(false)
-        }
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [isProcessing, paymentComplete])
-
-  // Filter FAQs
-  const filteredFaqs = faqs.filter(
-    (faq) =>
-      faq.question.toLowerCase().includes(faqSearch.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(faqSearch.toLowerCase()),
-  )
-
-  // Toggle FAQ
-  const toggleFaq = (index) => {
-    setOpenFaq(openFaq === index ? null : index)
-  }
-
-  // Handle plan selection
-  const handleSelectPlan = (plan) => {
-    if (plan.id === "enterprise") {
-      // For enterprise, we'd typically redirect to a contact form
-      window.alert("For Enterprise plans, our sales team will contact you shortly.")
+    // Format card number with spaces
+    if (name === "number") {
+      const formattedValue = value
+        .replace(/\s/g, "")
+        .replace(/(\d{4})/g, "$1 ")
+        .trim()
+        .slice(0, 19)
+      setCardDetails({ ...cardDetails, [name]: formattedValue })
       return
     }
 
-    setSelectedPlan(plan)
-    setShowPaymentModal(true)
-    setPaymentStep(1)
-    setPaymentComplete(false)
+    // Format expiry date
+    if (name === "expiry") {
+      const formattedValue = value
+        .replace(/\D/g, "")
+        .replace(/^(\d{2})(\d)/, "$1/$2")
+        .slice(0, 5)
+      setCardDetails({ ...cardDetails, [name]: formattedValue })
+      return
+    }
+
+    // CVV - only numbers, max 3 digits
+    if (name === "cvv") {
+      const formattedValue = value.replace(/\D/g, "").slice(0, 3)
+      setCardDetails({ ...cardDetails, [name]: formattedValue })
+      return
+    }
+
+    setCardDetails({ ...cardDetails, [name]: value })
   }
 
-  // Handle payment form submission
-  const handlePaymentSubmit = (e) => {
+  const isFormValid = () => {
+    return (
+      cardDetails.number.replace(/\s/g, "").length === 16 &&
+      cardDetails.name.trim() !== "" &&
+      cardDetails.expiry.length === 5 &&
+      cardDetails.cvv.length === 3
+    )
+  }
+
+  const handleSubmit = (e) => {
     e.preventDefault()
+    if (!isFormValid()) return
 
-    if (paymentStep === 1) {
-      setPaymentStep(2)
-    } else {
-      setIsProcessing(true)
+    setIsProcessing(true)
 
-      // Simulate payment processing
+    // Simulate payment processing
+    setTimeout(() => {
+      setIsProcessing(false)
+      setIsSuccess(true)
+
+      // Notify parent component
       setTimeout(() => {
-        setIsProcessing(false)
-        setPaymentComplete(true)
-        setCurrentPlan(selectedPlan.id)
-      }, 2000)
-    }
-  }
-
-  // Format card number with spaces
-  const formatCardNumber = (value) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "")
-    const matches = v.match(/\d{4,16}/g)
-    const match = (matches && matches[0]) || ""
-    const parts = []
-
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4))
-    }
-
-    if (parts.length) {
-      return parts.join(" ")
-    } else {
-      return value
-    }
-  }
-
-  // Format card expiry date
-  const formatExpiryDate = (value) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "")
-
-    if (v.length > 2) {
-      return `${v.substring(0, 2)}/${v.substring(2, 4)}`
-    }
-
-    return v
-  }
-
-  // Animation variants
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.1, duration: 0.5 },
-    }),
-  }
-
-  const testimonialVariants = {
-    enter: { opacity: 0, x: 100 },
-    center: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -100 },
-  }
-
-  // Get current plan details
-  const getCurrentPlanPrice = () => {
-    if (!selectedPlan) return null
-
-    const price = isYearly ? selectedPlan.yearlyPrice?.[currency] : selectedPlan.monthlyPrice?.[currency]
-
-    if (price === null) return "Custom"
-
-    return `${currencySymbols[currency]}${price}`
+        onPaymentComplete()
+      }, 1000)
+    }, 1500)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Header Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-900 dark:to-blue-900">
-        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-blue-500/20 backdrop-blur-sm"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
-            Choose the Perfect Plan for Your Business
-          </h1>
-          <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-8">
-            Flexible subscription options designed to scale with your needs. No hidden fees, cancel anytime.
-          </p>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label htmlFor="card-number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Card Number
+        </label>
+        <div className="relative">
+          <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <input
+            id="card-number"
+            name="number"
+            type="text"
+            value={cardDetails.number}
+            onChange={handleChange}
+            placeholder="1234 5678 9012 3456"
+            className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            required
+          />
+        </div>
+      </div>
 
-          {/* Pricing and Currency Controls */}
-          <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <div className="bg-white/10 backdrop-blur-md rounded-full p-1 flex items-center">
-              <button
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  !isYearly ? "bg-white text-cyan-600" : "bg-transparent text-white hover:bg-white/10"
-                }`}
-                onClick={() => setIsYearly(false)}
-                aria-label="Monthly billing"
-              >
-                Monthly
-              </button>
-              <button
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  isYearly ? "bg-white text-cyan-600" : "bg-transparent text-white hover:bg-white/10"
-                }`}
-                onClick={() => setIsYearly(true)}
-                aria-label="Yearly billing"
-              >
-                Yearly <span className="text-xs ml-1 text-emerald-500 font-bold">(Save 20%)</span>
-              </button>
+      <div>
+        <label htmlFor="card-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Cardholder Name
+        </label>
+        <input
+          id="card-name"
+          name="name"
+          type="text"
+          value={cardDetails.name}
+          onChange={handleChange}
+          placeholder="John Doe"
+          className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          required
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="card-expiry" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Expiry Date
+          </label>
+          <input
+            id="card-expiry"
+            name="expiry"
+            type="text"
+            value={cardDetails.expiry}
+            onChange={handleChange}
+            placeholder="MM/YY"
+            className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="card-cvv" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            CVV
+          </label>
+          <div className="relative">
+            <input
+              id="card-cvv"
+              name="cvv"
+              type="password"
+              value={cardDetails.cvv}
+              onChange={handleChange}
+              placeholder="123"
+              className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
             </div>
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              className="bg-white/10 backdrop-blur-md text-white rounded-md px-3 py-2 text-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/50"
-              aria-label="Select currency"
-            >
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-              <option value="GBP">GBP (£)</option>
-            </select>
           </div>
         </div>
       </div>
 
-      {/* Plans Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.id}
-              custom={index}
-              initial="hidden"
-              animate="visible"
-              variants={cardVariants}
-              className={`relative bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 ${
-                plan.badge === "Most Popular" ? "md:scale-105 md:-mt-4 md:mb-4 z-10" : ""
-              } ${currentPlan === plan.id ? "ring-2 ring-green-500" : ""}`}
+      <div className="pt-2">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          type="submit"
+          disabled={!isFormValid() || isProcessing || isSuccess}
+          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center ${
+            !isFormValid()
+              ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+              : isSuccess
+                ? "bg-green-500 text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+        >
+          {isProcessing ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Processing...
+            </>
+          ) : isSuccess ? (
+            <>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Payment Successful
+            </>
+          ) : (
+            "Pay Now"
+          )}
+        </motion.button>
+      </div>
+
+      <div className="flex items-center justify-center space-x-4 pt-2">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png"
+          alt="Visa"
+          className="h-6"
+        />
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png"
+          alt="Mastercard"
+          className="h-6"
+        />
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/1200px-American_Express_logo_%282018%29.svg.png"
+          alt="American Express"
+          className="h-6"
+        />
+        <img
+          src="https://imgs.search.brave.com/yf3MUW4FNZlAzc5r4erQL2XDIZabRH46-hl-YE6cYF0/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bnBjaS5vcmcuaW4v/aW1hZ2VzL25wY2kv/cnVwYXktbG9nby5w/bmc"
+          alt="RuPay"
+          className="h-6"
+        />
+      </div>
+
+      <div className="flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 pt-2">
+        <Lock className="h-3 w-3 mr-1" />
+        Secured by 256-bit encryption
+      </div>
+    </form>
+  )
+}
+
+// Netbanking Component
+const NetbankingForm = ({ onPaymentComplete }) => {
+  const [selectedBank, setSelectedBank] = useState("")
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  const banks = [
+    { id: "sbi", name: "State Bank of India" },
+    { id: "hdfc", name: "HDFC Bank" },
+    { id: "icici", name: "ICICI Bank" },
+    { id: "axis", name: "Axis Bank" },
+    { id: "kotak", name: "Kotak Mahindra Bank" },
+    { id: "yes", name: "Yes Bank" },
+    { id: "pnb", name: "Punjab National Bank" },
+    { id: "bob", name: "Bank of Baroda" },
+  ]
+
+  const handleSubmit = () => {
+    if (!selectedBank) return
+
+    setIsProcessing(true)
+
+    // Simulate payment processing
+    setTimeout(() => {
+      setIsProcessing(false)
+      setIsSuccess(true)
+
+      // Notify parent component
+      setTimeout(() => {
+        onPaymentComplete()
+      }, 1000)
+    }, 1500)
+  }
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Your Bank</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {banks.map((bank) => (
+            <div
+              key={bank.id}
+              onClick={() => setSelectedBank(bank.id)}
+              className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                selectedBank === bank.id
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+              }`}
             >
-              {/* Badge */}
-              {plan.badge && (
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs font-bold py-1.5 text-center">
-                  {plan.badge}
+              <div className="flex items-center">
+                <div className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center mr-3">
+                  {selectedBank === bank.id && <div className="w-2 h-2 rounded-full bg-blue-500"></div>}
                 </div>
-              )}
-
-              <div className={`p-6 ${plan.badge ? "pt-10" : ""}`}>
-                {/* Plan Icon and Name */}
-                <div className="flex items-center mb-4">
-                  <div className="mr-3 p-2 rounded-full bg-slate-100 dark:bg-slate-700">{plan.icon}</div>
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{plan.name}</h2>
-                </div>
-
-                {/* Description */}
-                <p className="text-slate-600 dark:text-slate-400 mb-4">{plan.description}</p>
-
-                {/* Price */}
-                <div className="mb-6">
-                  <div className="text-3xl font-bold text-slate-900 dark:text-white">
-                    {plan.monthlyPrice === null ? (
-                      "Custom"
-                    ) : (
-                      <>
-                        {currencySymbols[currency]}
-                        {Math.round(
-                          (isYearly ? plan.yearlyPrice[currency] : plan.monthlyPrice[currency]) *
-                            exchangeRates[currency],
-                        )}
-                        <span className="text-base font-normal text-slate-500 dark:text-slate-400">
-                          /{isYearly ? "year" : "month"}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  {isYearly && plan.monthlyPrice !== null && (
-                    <div className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">
-                      Save{" "}
-                      {Math.round(
-                        ((plan.monthlyPrice[currency] * 12 - plan.yearlyPrice[currency]) /
-                          (plan.monthlyPrice[currency] * 12)) *
-                          100,
-                      )}
-                      % compared to monthly
-                    </div>
-                  )}
-                </div>
-
-                {/* Feature Metrics */}
-                <div className="space-y-3 mb-6">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-slate-700 dark:text-slate-300">Storage</span>
-                      <span className="font-medium text-slate-900 dark:text-white">
-                        {plan.featureMetrics.storage >= 1000 ? "Unlimited" : `${plan.featureMetrics.storage}GB`}
-                      </span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                      <motion.div
-                        className="bg-cyan-500 h-2 rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${Math.min((plan.featureMetrics.storage / 1000) * 100, 100)}%` }}
-                        transition={{ duration: 1 }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-slate-700 dark:text-slate-300">API Calls</span>
-                      <span className="font-medium text-slate-900 dark:text-white">
-                        {plan.featureMetrics.api >= 1000000
-                          ? "Unlimited"
-                          : `${plan.featureMetrics.api.toLocaleString()}/day`}
-                      </span>
-                    </div>
-                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                      <motion.div
-                        className="bg-blue-500 h-2 rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${Math.min((plan.featureMetrics.api / 1000000) * 100, 100)}%` }}
-                        transition={{ duration: 1 }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Features */}
-                <div className="space-y-3 mb-6">
-                  {plan.features.map((feature) => (
-                    <div key={feature} className="flex items-start">
-                      <Check className="w-5 h-5 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                      <span className="text-slate-700 dark:text-slate-300">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA Button */}
-                <button
-                  onClick={() => handleSelectPlan(plan)}
-                  className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
-                    currentPlan === plan.id
-                      ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                      : plan.badge === "Most Popular"
-                        ? "bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
-                        : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-900 dark:text-white"
-                  }`}
-                >
-                  {currentPlan === plan.id ? "Current Plan" : plan.cta}
-                </button>
+                <span className="text-sm text-gray-900 dark:text-white">{bank.name}</span>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Feature Comparison */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Compare Plan Features</h2>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-            Find the perfect plan for your business needs with our detailed feature comparison
-          </p>
-        </div>
-
-        <button
-          className="md:hidden w-full py-3 mb-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
-          onClick={() => setShowComparison(!showComparison)}
+      <div className="pt-2">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleSubmit}
+          disabled={!selectedBank || isProcessing || isSuccess}
+          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center ${
+            !selectedBank
+              ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+              : isSuccess
+                ? "bg-green-500 text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
         >
-          {showComparison ? "Hide Comparison Table" : "Show Comparison Table"}
-        </button>
+          {isProcessing ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Redirecting to Bank...
+            </>
+          ) : isSuccess ? (
+            <>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Payment Successful
+            </>
+          ) : (
+            "Continue to Bank"
+          )}
+        </motion.button>
+      </div>
 
-        <div className={`${showComparison ? "block" : "hidden"} md:block overflow-x-auto`}>
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-slate-100 dark:bg-slate-800">
-                <th className="p-4 text-left text-slate-900 dark:text-white font-semibold">Feature</th>
-                {plans.map((plan) => (
-                  <th key={plan.id} className="p-4 text-center text-slate-900 dark:text-white font-semibold">
-                    {plan.name}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
-                <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
-                  <div className="flex items-center">
-                    <Database className="w-5 h-5 mr-2 text-slate-400" />
-                    Storage
-                  </div>
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">5GB</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">50GB</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">200GB</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">Unlimited</td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
-                <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
-                  <div className="flex items-center">
-                    <Headphones className="w-5 h-5 mr-2 text-slate-400" />
-                    Support
-                  </div>
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">Community</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">Priority Email</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">24/7 Email & Chat</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">24/7 Dedicated</td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
-                <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
-                  <div className="flex items-center">
-                    <Zap className="w-5 h-5 mr-2 text-slate-400" />
-                    API Calls/Day
-                  </div>
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">100</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">10,000</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">50,000</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">Unlimited</td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
-                <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
-                  <div className="flex items-center">
-                    <BarChart className="w-5 h-5 mr-2 text-slate-400" />
-                    Analytics
-                  </div>
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">Basic</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">Advanced</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">Custom</td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">Custom</td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
-                <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
-                  <div className="flex items-center">
-                    <Users className="w-5 h-5 mr-2 text-slate-400" />
-                    Team Collaboration
-                  </div>
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <Check className="w-5 h-5 text-emerald-500 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <Check className="w-5 h-5 text-emerald-500 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <Check className="w-5 h-5 text-emerald-500 mx-auto" />
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
-                <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
-                  <div className="flex items-center">
-                    <Shield className="w-5 h-5 mr-2 text-slate-400" />
-                    Advanced Security
-                  </div>
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <Check className="w-5 h-5 text-emerald-500 mx-auto" />
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
-                <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
-                  <div className="flex items-center">
-                    <Layers className="w-5 h-5 mr-2 text-slate-400" />
-                    Custom Integrations
-                  </div>
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <Check className="w-5 h-5 text-emerald-500 mx-auto" />
-                </td>
-              </tr>
-              <tr>
-                <td className="p-4 text-slate-700 dark:text-slate-300 font-medium">
-                  <div className="flex items-center">
-                    <Clock className="w-5 h-5 mr-2 text-slate-400" />
-                    Uptime SLA
-                  </div>
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <X className="w-5 h-5 text-slate-400 mx-auto" />
-                </td>
-                <td className="p-4 text-center text-slate-700 dark:text-slate-300">
-                  <Check className="w-5 h-5 text-emerald-500 mx-auto" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div className="flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 pt-2">
+        <AlertCircle className="h-3 w-3 mr-1" />
+        You will be redirected to your bank's secure payment page
+      </div>
+    </div>
+  )
+}
+
+// Wallet Payment Component
+const WalletPaymentForm = ({ onPaymentComplete }) => {
+  const [selectedWallet, setSelectedWallet] = useState("")
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  const wallets = [
+    {
+      id: "paytm",
+      name: "Paytm",
+      icon: "https://imgs.search.brave.com/C_0XNC5c91Ud6rfNUeiZQptlku1FjAFQBLoH8ybUSig/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bG9nby53aW5lL2Ev/bG9nby9QYXl0bS9Q/YXl0bS1Mb2dvLndp/bmUuc3Zn",
+    },
+    {
+      id: "amazonpay",
+      name: "Amazon Pay",
+      icon: "https://imgs.search.brave.com/NO3EmHho6braQ3_Co2xbgFGPJxkMGBzw1wS1BNTSy24/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuc3RpY2twbmcu/Y29tL2ltYWdlcy82/MjIwYTk4NjkxMjAx/M2M1MTk0N2Y5Yjcu/cG5n",
+    },
+    {
+      id: "mobikwik",
+      name: "MobiKwik",
+      icon: "https://imgs.search.brave.com/_q62rhjC1fezKfKxeJPsHT-4E9JyGzNcphRW5x2nwr0/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bG9nby53aW5lL2Ev/bG9nby9Nb2JpS3dp/ay9Nb2JpS3dpay1M/b2dvLndpbmUuc3Zn",
+    },
+    {
+      id: "freecharge",
+      name: "Freecharge",
+      icon: "https://imgs.search.brave.com/LuqXWkg7zADnIOWlq1dWXcoXj7eUGw1Syr67QghlICk/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzMzLzIvdW5pZmll/ZC1wYXltZW50LWlu/dGVyZmFjZS11cGkt/bG9nby1wbmdfc2Vl/a2xvZ28tMzMzMDg4/LnBuZw",
+    },
+  ]
+
+  const handleSubmit = () => {
+    if (!selectedWallet) return
+
+    setIsProcessing(true)
+
+    // Simulate payment processing
+    setTimeout(() => {
+      setIsProcessing(false)
+      setIsSuccess(true)
+
+      // Notify parent component
+      setTimeout(() => {
+        onPaymentComplete()
+      }, 1000)
+    }, 1500)
+  }
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Your Wallet</label>
+        <div className="grid grid-cols-2 gap-3">
+          {wallets.map((wallet) => (
+            <div
+              key={wallet.id}
+              onClick={() => setSelectedWallet(wallet.id)}
+              className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                selectedWallet === wallet.id
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+              }`}
+            >
+              <div className="flex flex-col items-center">
+                <div className="h-8 mb-2 flex items-center justify-center">
+                  <img
+                    src={wallet.icon || "/placeholder.svg"}
+                    alt={wallet.name}
+                    className="max-h-full object-contain"
+                  />
+                </div>
+                <span className="text-sm text-gray-900 dark:text-white text-center">{wallet.name}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Testimonials Section */}
-      <div className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-slate-800/50 dark:to-slate-900/50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Trusted by Industry Leaders</h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-              See what our customers have to say about our subscription plans
-            </p>
-          </div>
-
-          <div className="relative max-w-4xl mx-auto overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={testimonialIndex}
-                variants={testimonialVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.5 }}
-                className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 text-center"
+      <div className="pt-2">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleSubmit}
+          disabled={!selectedWallet || isProcessing || isSuccess}
+          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center ${
+            !selectedWallet
+              ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+              : isSuccess
+                ? "bg-green-500 text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+        >
+          {isProcessing ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
               >
-                <div className="flex justify-center mb-6">
-                  <div className="relative w-16 h-16 rounded-full overflow-hidden border-4 border-cyan-100 dark:border-cyan-900">
-                    <img
-                      src={testimonials[testimonialIndex].avatar || "/placeholder.svg"}
-                      alt={testimonials[testimonialIndex].author}
-                      className="object-cover w-full h-full"
-                    />
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Redirecting to Wallet...
+            </>
+          ) : isSuccess ? (
+            <>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Payment Successful
+            </>
+          ) : (
+            "Continue to Wallet"
+          )}
+        </motion.button>
+      </div>
+
+      <div className="flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 pt-2">
+        <Smartphone className="h-3 w-3 mr-1" />
+        You may need to authorize this payment in your wallet app
+      </div>
+    </div>
+  )
+}
+
+// EMI Payment Component
+const EmiPaymentForm = ({ onPaymentComplete, planPrice }) => {
+  const [selectedTenure, setSelectedTenure] = useState("")
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  const calculateEmi = (tenure) => {
+    const interestRates = {
+      "3": 0.03,
+      "6": 0.06,
+      "9": 0.09,
+      "12": 0.12,
+    }
+
+    const principal = planPrice
+    const rate = interestRates[tenure] / 12
+    const totalAmount = principal * (1 + interestRates[tenure])
+    const monthlyPayment = totalAmount / Number.parseInt(tenure)
+
+    return {
+      monthly: Math.round(monthlyPayment),
+      total: Math.round(totalAmount),
+      interest: Math.round(totalAmount - principal),
+    }
+  }
+
+  const emiOptions = [
+    { tenure: "3", label: "3 Months" },
+    { tenure: "6", label: "6 Months" },
+    { tenure: "9", label: "9 Months" },
+    { tenure: "12", label: "12 Months" },
+  ]
+
+  const handleSubmit = () => {
+    if (!selectedTenure) return
+
+    setIsProcessing(true)
+    setTimeout(() => {
+      setIsProcessing(false)
+      setIsSuccess(true)
+      setTimeout(() => {
+        onPaymentComplete()
+      }, 1000)
+    }, 1500)
+  }
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select EMI Tenure</label>
+        <div className="space-y-3">
+          {emiOptions.map((option) => {
+            const emiDetails = calculateEmi(option.tenure)
+
+            return (
+              <div
+                key={option.tenure}
+                onClick={() => setSelectedTenure(option.tenure)}
+                className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                  selectedTenure === option.tenure
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center mr-3">
+                      {selectedTenure === option.tenure && <div className="w-2 h-2 rounded-full bg-blue-500"></div>}
+                    </div>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">{option.label}</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">₹{emiDetails.monthly}/mo</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Total: ₹{emiDetails.total}</div>
                   </div>
                 </div>
-                <Quote className="w-8 h-8 text-cyan-500 mx-auto mb-4 opacity-50" />
-                <p className="text-lg text-slate-700 dark:text-slate-300 mb-6 italic">
-                  "{testimonials[testimonialIndex].quote}"
-                </p>
-                <div>
-                  <p className="font-semibold text-slate-900 dark:text-white">
-                    {testimonials[testimonialIndex].author}
-                  </p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{testimonials[testimonialIndex].title}</p>
-                </div>
-                <div className="flex justify-center mt-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
-              </motion.div>
-            </AnimatePresence>
-            <div className="flex justify-center mt-6">
-              {testimonials.map((_, i) => (
-                <button
-                  key={i}
-                  className={`w-3 h-3 rounded-full mx-1 transition-colors ${
-                    i === testimonialIndex ? "bg-cyan-600" : "bg-slate-300 dark:bg-slate-600"
-                  }`}
-                  onClick={() => setTestimonialIndex(i)}
-                  aria-label={`Go to testimonial ${i + 1}`}
-                />
-              ))}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {selectedTenure && (
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">EMI Details</h4>
+          <div className="space-y-1 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-gray-400">Principal Amount</span>
+              <span className="text-gray-900 dark:text-white">₹{planPrice}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-gray-400">Interest Amount</span>
+              <span className="text-gray-900 dark:text-white">₹{calculateEmi(selectedTenure).interest}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-gray-400">Total Amount</span>
+              <span className="font-medium text-gray-900 dark:text-white">₹{calculateEmi(selectedTenure).total}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600 dark:text-gray-400">Monthly Installment</span>
+              <span className="font-medium text-gray-900 dark:text-white">₹{calculateEmi(selectedTenure).monthly}</span>
             </div>
           </div>
         </div>
+      )}
+
+      <div className="pt-2">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleSubmit}
+          disabled={!selectedTenure || isProcessing || isSuccess}
+          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center ${
+            !selectedTenure
+              ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+              : isSuccess
+                ? "bg-green-500 text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+          }`}
+        >
+          {isProcessing ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Processing...
+            </>
+          ) : isSuccess ? (
+            <>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              EMI Setup Successful
+            </>
+          ) : (
+            "Confirm EMI Payment"
+          )}
+        </motion.button>
       </div>
 
-      {/* FAQ Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Frequently Asked Questions</h2>
-          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-            Find answers to common questions about our subscription plans
-          </p>
-        </div>
+      <div className="flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 pt-2">
+        <Shield className="h-3 w-3 mr-1" />
+        No credit card needed. Instant approval with minimal documentation.
+      </div>
+    </div>
+  )
+}
 
-        <div className="max-w-3xl mx-auto mb-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search FAQs..."
-              value={faqSearch}
-              onChange={(e) => setFaqSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              aria-label="Search FAQs"
-            />
-          </div>
-        </div>
+// Payment Gateway Modal Component
+const PaymentGatewayModal = ({ isOpen, onClose, plan, isAnnual }) => {
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("UPI")
+  const [selectedUpiApp, setSelectedUpiApp] = useState("")
+  const [upiId, setUpiId] = useState("")
+  const [showUpiPin, setShowUpiPin] = useState(false)
+  const [paymentComplete, setPaymentComplete] = useState(false)
+  const [showOrderSummary, setShowOrderSummary] = useState(false)
+  const [couponCode, setCouponCode] = useState("")
+  const [showCouponInput, setShowCouponInput] = useState(false)
+  const [appliedCoupon, setAppliedCoupon] = useState(null)
 
-        <div className="space-y-4 max-w-3xl mx-auto">
-          {filteredFaqs.length > 0 ? (
-            filteredFaqs.map((faq, index) => (
-              <div
-                key={index}
-                className="bg-white dark:bg-slate-800 rounded-xl shadow-md overflow-hidden border border-slate-200 dark:border-slate-700"
-              >
+  // Reset state when modal opens with new plan
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedPaymentMethod("UPI")
+      setSelectedUpiApp("")
+      setUpiId("")
+      setShowUpiPin(false)
+      setPaymentComplete(false)
+      setShowOrderSummary(false)
+      setCouponCode("")
+      setShowCouponInput(false)
+      setAppliedCoupon(null)
+    }
+  }, [isOpen, plan])
+
+  const handleUpiContinue = () => {
+    if (!selectedUpiApp && !upiId) {
+      toast.error("Please select a UPI app or enter UPI ID")
+      return
+    }
+
+    setShowUpiPin(true)
+  }
+
+  const handleUpiPinComplete = () => {
+    setPaymentComplete(true)
+
+    // Show success toast
+    toast.success(`Payment successful! Your ${plan.name} subscription is now active.`, {
+      duration: 5000,
+      icon: "🎉",
+    })
+
+    // Close modal after delay
+    setTimeout(() => {
+      onClose()
+    }, 2000)
+  }
+
+  const handlePaymentComplete = () => {
+    setPaymentComplete(true)
+
+    // Show success toast
+    toast.success(`Payment successful! Your ${plan.name} subscription is now active.`, {
+      duration: 5000,
+      icon: "🎉",
+    })
+
+    // Close modal after delay
+    setTimeout(() => {
+      onClose()
+    }, 2000)
+  }
+
+  const handleApplyCoupon = () => {
+    if (!couponCode) return
+
+    // Simulate coupon validation
+    if (couponCode.toUpperCase() === "WELCOME10") {
+      setAppliedCoupon({
+        code: "WELCOME10",
+        discount: 10,
+        type: "percent",
+      })
+      toast.success("Coupon applied successfully!")
+    } else if (couponCode.toUpperCase() === "FLAT100") {
+      setAppliedCoupon({
+        code: "FLAT100",
+        discount: 100,
+        type: "fixed",
+      })
+      toast.success("Coupon applied successfully!")
+    } else {
+      toast.error("Invalid coupon code")
+    }
+  }
+
+  const calculateDiscountedPrice = () => {
+    if (!appliedCoupon) return plan.price
+
+    if (appliedCoupon.type === "percent") {
+      return Math.round(plan.price * (1 - appliedCoupon.discount / 100))
+    } else {
+      return Math.max(0, plan.price - appliedCoupon.discount)
+    }
+  }
+
+  const paymentMethods = [
+    { id: "UPI", name: "UPI / QR", icon: <Smartphone className="h-5 w-5" /> },
+    { id: "CARD", name: "Credit / Debit Card", icon: <CreditCard className="h-5 w-5" /> },
+    { id: "NETBANKING", name: "Net Banking", icon: <Building className="h-5 w-5" /> },
+    { id: "WALLET", name: "Wallets", icon: <Wallet className="h-5 w-5" /> },
+    { id: "EMI", name: "EMI", icon: <DollarSign className="h-5 w-5" /> },
+  ]
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 "
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md overflow-hidden h-[90vh] overflow-y-auto"
+          >
+            {/* Header */}
+            <div className="border-b border-gray-200 dark:border-gray-700 p-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Complete Payment</h2>
                 <button
-                  className="w-full flex justify-between items-center text-left p-6 focus:outline-none"
-                  onClick={() => toggleFaq(index)}
-                  aria-expanded={openFaq === index}
+                  onClick={onClose}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
                 >
-                  <span className="text-lg font-medium text-slate-900 dark:text-white">{faq.question}</span>
-                  {openFaq === index ? (
-                    <ChevronUp className="w-5 h-5 text-cyan-500 flex-shrink-0" />
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-4">
+              {/* Order Summary */}
+              <div className="mb-4">
+                <button
+                  onClick={() => setShowOrderSummary(!showOrderSummary)}
+                  className="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                >
+                  <div className="flex items-center">
+                    <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400 mr-2" />
+                    <span className="font-medium text-gray-900 dark:text-white">Order Summary</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-bold text-gray-900 dark:text-white mr-2">
+                      ₹{appliedCoupon ? calculateDiscountedPrice() : plan.price}
+                    </span>
+                    <ChevronDown
+                      className={`h-5 w-5 text-gray-500 transition-transform ${showOrderSummary ? "rotate-180" : ""}`}
+                    />
+                  </div>
+                </button>
+
+                <AnimatePresence>
+                  {showOrderSummary && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden mt-2"
+                    >
+                      <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center">
+                            <div
+                              className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${
+                                plan.color === "blue"
+                                  ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"
+                                  : plan.color === "purple"
+                                    ? "bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400"
+                                    : "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400"
+                              }`}
+                            >
+                              {plan.icon}
+                            </div>
+                            <div>
+                              <h3 className="font-medium text-gray-900 dark:text-white">{plan.name}</h3>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {isAnnual ? "Annual" : "Monthly"} Subscription
+                              </p>
+                            </div>
+                          </div>
+                          <span className="font-medium text-gray-900 dark:text-white">₹{plan.price}</span>
+                        </div>
+
+                        {appliedCoupon && (
+                          <div className="flex justify-between items-center mb-3 text-sm">
+                            <div className="flex items-center">
+                              <Tag className="h-4 w-4 text-green-500 mr-2" />
+                              <span className="text-gray-600 dark:text-gray-400">Coupon: {appliedCoupon.code}</span>
+                            </div>
+                            <span className="text-green-600 dark:text-green-400">
+                              -₹
+                              {appliedCoupon.type === "percent"
+                                ? Math.round((plan.price * appliedCoupon.discount) / 100)
+                                : appliedCoupon.discount}
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-gray-900 dark:text-white">Total</span>
+                            <span className="font-bold text-gray-900 dark:text-white">
+                              ₹{appliedCoupon ? calculateDiscountedPrice() : plan.price}
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Includes all applicable taxes
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Coupon Code */}
+              <div className="mb-4">
+                <button
+                  onClick={() => setShowCouponInput(!showCouponInput)}
+                  className="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                >
+                  <div className="flex items-center">
+                    <Tag className="h-5 w-5 text-blue-600 dark:text-blue-400 mr-2" />
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {appliedCoupon ? "Coupon Applied" : "Apply Coupon"}
+                    </span>
+                  </div>
+                  {appliedCoupon ? (
+                    <span className="text-green-600 dark:text-green-400 text-sm font-medium">{appliedCoupon.code}</span>
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-cyan-500 flex-shrink-0" />
+                    <ChevronDown
+                      className={`h-5 w-5 text-gray-500 transition-transform ${showCouponInput ? "rotate-180" : ""}`}
+                    />
                   )}
                 </button>
+
                 <AnimatePresence>
-                  {openFaq === index && (
+                  {showCouponInput && !appliedCoupon && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden mt-2"
+                    >
+                      <div className="flex">
+                        <input
+                          type="text"
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          placeholder="Enter coupon code"
+                          className="flex-1 border border-gray-300 dark:border-gray-600 rounded-l-lg px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <button
+                          onClick={handleApplyCoupon}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg font-medium transition-colors"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Try "WELCOME10" for 10% off or "FLAT100" for ₹100 off
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Payment Methods */}
+              {!paymentComplete && !showUpiPin && (
+                <div className="mb-4">
+                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Payment Method</h3>
+                  <div className="space-y-2">
+                    {paymentMethods.map((method) => (
+                      <button
+                        key={method.id}
+                        onClick={() => setSelectedPaymentMethod(method.id)}
+                        className={`w-full flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                          selectedPaymentMethod === method.id
+                            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-500"
+                            : "border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        <div className="flex items-center">
+                          <div className="text-gray-700 dark:text-gray-300 mr-3">{method.icon}</div>
+                          <span className="font-medium text-gray-900 dark:text-white">{method.name}</span>
+                        </div>
+                        <ChevronRight className="h-5 w-5 text-gray-400" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Method Content */}
+              {!paymentComplete && (
+                <div className="mt-6">
+                  {selectedPaymentMethod === "UPI" && !showUpiPin && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Pay using UPI</h3>
+
+                      {/* UPI App Selection */}
+                      <UpiAppSelection selectedApp={selectedUpiApp} onSelectApp={setSelectedUpiApp} />
+
+                      {/* OR Divider */}
+                      <div className="text-center relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                        </div>
+                        <div className="relative">
+                          <span className="px-2 py-1 bg-white dark:bg-gray-800 text-sm text-gray-500 dark:text-gray-400">
+                            OR
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* UPI ID Input */}
+                      <div>
+                        <label
+                          htmlFor="upi-id"
+                          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                        >
+                          Enter UPI ID
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="upi-id"
+                            type="text"
+                            value={upiId}
+                            onChange={(e) => setUpiId(e.target.value)}
+                            placeholder="name@upi"
+                            className="block w-full px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          />
+                        </div>
+                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                          You will receive a payment request on your UPI app
+                        </p>
+                      </div>
+
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleUpiContinue}
+                        className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                      >
+                        Continue
+                      </motion.button>
+                    </div>
+                  )}
+
+                  {selectedPaymentMethod === "UPI" && showUpiPin && (
+                    <UpiPinInput onPinComplete={handleUpiPinComplete} />
+                  )}
+
+                  {selectedPaymentMethod === "CARD" && <CardPaymentForm onPaymentComplete={handlePaymentComplete} />}
+
+                  {selectedPaymentMethod === "NETBANKING" && (
+                    <NetbankingForm onPaymentComplete={handlePaymentComplete} />
+                  )}
+
+                  {selectedPaymentMethod === "WALLET" && (
+                    <WalletPaymentForm onPaymentComplete={handlePaymentComplete} />
+                  )}
+
+                  {selectedPaymentMethod === "EMI" && (
+                    <EmiPaymentForm onPaymentComplete={handlePaymentComplete} planPrice={plan.price} />
+                  )}
+                </div>
+              )}
+
+              {/* Payment Success */}
+              {paymentComplete && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-6"
+                >
+                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Payment Successful!</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    Your {plan.name} subscription has been activated successfully.
+                  </p>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onClose}
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                  >
+                    Continue
+                  </motion.button>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-gray-200 dark:border-gray-700 p-4 text-center">
+              <div className="flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
+                <Lock className="h-3 w-3 mr-1" />
+                Secured by 256-bit encryption
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+
+// Main Subscriptions Page Component
+const Subscriptions = () => {
+  const [selectedPlan, setSelectedPlan] = useState(null)
+  const [isAnnual, setIsAnnual] = useState(false)
+  const [showFaq, setShowFaq] = useState({})
+
+  const toggleFaq = (id) => {
+    setShowFaq((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }))
+  }
+  useEffect(() => {
+      // Ensure the scroll happens after the component mounts
+      const scrollToTop = () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        });
+      };
+      const timer = setTimeout(scrollToTop, 0);
+      return () => clearTimeout(timer);
+    }, []);
+
+  const plans = {
+    monthly: [
+      {
+        id: "basic",
+        name: "Basic",
+        price: 499,
+        description: "Perfect for individuals and small teams",
+        icon: <Layers className="h-5 w-5" />,
+        features: ["Up to 5 users", "10GB storage", "Basic analytics", "Email support", "API access"],
+        notIncluded: ["Advanced analytics", "Custom branding", "Dedicated support", "Priority features"],
+        popular: false,
+        color: "blue",
+      },
+      {
+        id: "pro",
+        name: "Professional",
+        price: 999,
+        description: "Ideal for growing businesses",
+        icon: <Briefcase className="h-5 w-5" />,
+        features: [
+          "Up to 20 users",
+          "50GB storage",
+          "Advanced analytics",
+          "Priority support",
+          "API access",
+          "Custom branding",
+          "Team collaboration tools",
+        ],
+        notIncluded: ["Dedicated account manager", "Advanced security", "Custom integrations"],
+        popular: true,
+        color: "purple",
+      },
+      {
+        id: "enterprise",
+        name: "Enterprise",
+        price: 1999,
+        description: "For large organizations with advanced needs",
+        icon: <Globe className="h-5 w-5" />,
+        features: [
+          "Unlimited users",
+          "500GB storage",
+          "Advanced analytics",
+          "24/7 priority support",
+          "API access",
+          "Custom branding",
+          "Team collaboration tools",
+          "Dedicated account manager",
+          "Advanced security",
+          "Custom integrations",
+          "SLA guarantees",
+        ],
+        notIncluded: [],
+        popular: false,
+        color: "emerald",
+      },
+    ],
+    yearly: [
+      {
+        id: "basic",
+        name: "Basic",
+        price: 4990,
+        description: "Perfect for individuals and small teams",
+        icon: <Layers className="h-5 w-5" />,
+        features: ["Up to 5 users", "10GB storage", "Basic analytics", "Email support", "API access"],
+        notIncluded: ["Advanced analytics", "Custom branding", "Dedicated support", "Priority features"],
+        popular: false,
+        color: "blue",
+        discount: "Save 17%",
+      },
+      {
+        id: "pro",
+        name: "Professional",
+        price: 9990,
+        description: "Ideal for growing businesses",
+        icon: <Briefcase className="h-5 w-5" />,
+        features: [
+          "Up to 20 users",
+          "50GB storage",
+          "Advanced analytics",
+          "Priority support",
+          "API access",
+          "Custom branding",
+          "Team collaboration tools",
+        ],
+        notIncluded: ["Dedicated account manager", "Advanced security", "Custom integrations"],
+        popular: true,
+        color: "purple",
+        discount: "Save 17%",
+      },
+      {
+        id: "enterprise",
+        name: "Enterprise",
+        price: 19990,
+        description: "For large organizations with advanced needs",
+        icon: <Globe className="h-5 w-5" />,
+        features: [
+          "Unlimited users",
+          "500GB storage",
+          "Advanced analytics",
+          "24/7 priority support",
+          "API access",
+          "Custom branding",
+          "Team collaboration tools",
+          "Dedicated account manager",
+          "Advanced security",
+          "Custom integrations",
+          "SLA guarantees",
+        ],
+        notIncluded: [],
+        popular: false,
+        color: "emerald",
+        discount: "Save 17%",
+      },
+    ],
+  }
+
+  const activePlans = plans[isAnnual ? "yearly" : "monthly"]
+
+  const faqs = [
+    {
+      id: 1,
+      question: "How does the billing cycle work?",
+      answer:
+        "You can choose between monthly or yearly billing. Yearly plans offer a 17% discount compared to monthly plans. You can change your billing cycle at any time from your account settings.",
+    },
+    {
+      id: 2,
+      question: "Can I upgrade or downgrade my plan?",
+      answer:
+        "Yes, you can upgrade or downgrade your plan at any time. When upgrading, you'll be charged the prorated difference. When downgrading, the new rate will apply at the start of your next billing cycle.",
+    },
+    {
+      id: 3,
+      question: "Is there a free trial available?",
+      answer: "Yes, we offer a 14-day free trial on all plans. No credit card required to start your trial.",
+    },
+    {
+      id: 4,
+      question: "What payment methods do you accept?",
+      answer:
+        "We accept all major credit cards, debit cards, UPI payments, net banking, and digital wallets. For enterprise plans, we also offer invoice-based payments.",
+    },
+    {
+      id: 5,
+      question: "How secure is my data?",
+      answer:
+        "We take security seriously. All data is encrypted both in transit and at rest. We use industry-standard security protocols and regularly undergo security audits to ensure your data remains protected.",
+    },
+    {
+      id: 6,
+      question: "What happens when my subscription ends?",
+      answer:
+        "When your subscription ends, your account will be downgraded to our free tier with limited features. Your data will be retained for 30 days, after which it may be archived or deleted according to our data retention policy.",
+    },
+  ]
+
+  const features = [
+    {
+      icon: <Zap className="h-6 w-6 text-blue-500" />,
+      title: "Lightning Fast Performance",
+      description: "Optimized for speed and efficiency across all devices",
+    },
+    {
+      icon: <Shield className="h-6 w-6 text-emerald-500" />,
+      title: "Enterprise-Grade Security",
+      description: "Advanced encryption and security protocols to protect your data",
+    },
+    {
+      icon: <Clock className="h-6 w-6 text-purple-500" />,
+      title: "Real-Time Analytics",
+      description: "Get insights instantly with our real-time analytics dashboard",
+    },
+    {
+      icon: <Award className="h-6 w-6 text-amber-500" />,
+      title: "Premium Support",
+      description: "24/7 support from our dedicated customer success team",
+    },
+    {
+      icon: <Sparkles className="h-6 w-6 text-pink-500" />,
+      title: "AI-Powered Insights",
+      description: "Leverage machine learning to uncover valuable business insights",
+    },
+    {
+      icon: <Rocket className="h-6 w-6 text-red-500" />,
+      title: "Scalable Infrastructure",
+      description: "Grows with your business without performance degradation",
+    },
+  ]
+
+  const testimonials = [
+    {
+      name: "Sarah Johnson",
+      role: "CEO at TechStart",
+      content:
+        "This subscription service has completely transformed how we operate. The analytics tools alone have increased our efficiency by 40%.",
+      avatar: "SJ",
+      rating: 5,
+    },
+    {
+      name: "Michael Chen",
+      role: "Marketing Director",
+      content:
+        "The ROI we've seen since subscribing has been incredible. Customer support is responsive and the platform is intuitive.",
+      avatar: "MC",
+      rating: 5,
+    },
+    {
+      name: "Priya Patel",
+      role: "Product Manager",
+      content:
+        "I've used many similar services, but this one stands out for its reliability and feature set. Highly recommended for growing teams.",
+      avatar: "PP",
+      rating: 4,
+    },
+  ]
+
+  const stats = [
+    { value: "99.9%", label: "Uptime", icon: <Cloud className="h-5 w-5 text-blue-500" /> },
+    { value: "24/7", label: "Support", icon: <Headphones className="h-5 w-5 text-purple-500" /> },
+    { value: "500+", label: "Integrations", icon: <Database className="h-5 w-5 text-emerald-500" /> },
+    { value: "10M+", label: "Users", icon: <Users className="h-5 w-5 text-amber-500" /> },
+  ]
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <Toaster />
+            {/* Hero Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <motion.h1
+              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Supercharge Your Business Growth
+            </motion.h1>
+            <motion.p
+              className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-blue-100"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              All-in-one platform with powerful tools to help you scale, analyze, and optimize your business operations.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <a
+                href="#pricing"
+                className="inline-block bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+              >
+                View Pricing Plans
+              </a>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-12 bg-white dark:bg-gray-800 shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="flex justify-center mb-2">{stat.icon}</div>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+                <div className="text-gray-500 dark:text-gray-400">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Powerful Features</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Everything you need to take your business to the next level
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="mb-4 p-2 inline-block bg-gray-100 dark:bg-gray-700 rounded-lg">{feature.icon}</div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-white dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Choose the plan that works best for your business needs
+            </p>
+
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center mt-8">
+              <span
+                className={`text-sm ${!isAnnual ? "text-gray-900 dark:text-white font-medium" : "text-gray-500 dark:text-gray-400"}`}
+              >
+                Monthly
+              </span>
+              <button
+                className="relative mx-4 w-14 h-7 bg-blue-600 rounded-full focus:outline-none"
+                onClick={() => setIsAnnual(!isAnnual)}
+              >
+                <div
+                  className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform duration-300 transform ${
+                    isAnnual ? "translate-x-7" : ""
+                  }`}
+                />
+              </button>
+              <span
+                className={`text-sm ${isAnnual ? "text-gray-900 dark:text-white font-medium" : "text-gray-500 dark:text-gray-400"}`}
+              >
+                Yearly <span className="text-green-600 dark:text-green-400 font-medium">(Save 17%)</span>
+              </span>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {activePlans.map((plan, index) => (
+              <SubscriptionPlan
+                key={plan.id}
+                plan={plan}
+                onSelect={setSelectedPlan}
+                isPopular={plan.popular}
+                isAnnual={isAnnual}
+              />
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="text-gray-600 dark:text-gray-400">
+              Need a custom plan?{" "}
+              <a href="#" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                Contact us
+              </a>{" "}
+              for enterprise pricing.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              What Our Customers Say
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Trusted by thousands of businesses worldwide
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold mr-4">
+                    {testimonial.avatar}
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">{testimonial.role}</p>
+                  </div>
+                </div>
+                <div className="flex mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < testimonial.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300 dark:text-gray-600"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-gray-600 dark:text-gray-400 italic">"{testimonial.content}"</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 bg-white dark:bg-gray-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
+              Find answers to common questions about our subscription plans
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            {faqs.map((faq) => (
+              <motion.div
+                key={faq.id}
+                className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: faq.id * 0.1 }}
+              >
+                <button
+                  onClick={() => toggleFaq(faq.id)}
+                  className="flex justify-between items-center w-full p-6 text-left"
+                >
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">{faq.question}</h3>
+                  <ChevronDown
+                    className={`h-5 w-5 text-gray-500 transition-transform ${showFaq[faq.id] ? "rotate-180" : ""}`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {showFaq[faq.id] && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
@@ -1348,433 +2062,43 @@ const Subscriptions = () => {
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden"
                     >
-                      <div className="p-6 pt-0 text-slate-600 dark:text-slate-300 border-t border-slate-100 dark:border-slate-700">
-                        {faq.answer}
+                      <div className="px-6 pb-6 text-gray-600 dark:text-gray-400">
+                        <p>{faq.answer}</p>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
-            ))
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-slate-600 dark:text-slate-400">No FAQs match your search.</p>
-              <button
-                onClick={() => setFaqSearch("")}
-                className="mt-4 text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300"
-              >
-                Clear search
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Trust Signals */}
-      <div className="bg-white dark:bg-slate-800 py-12 border-t border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Secure and Compliant</h2>
-          <p className="text-slate-600 dark:text-slate-400 mb-8">Trusted by over 10,000 businesses worldwide.</p>
-          <div className="flex flex-wrap justify-center gap-8">
-            <div className="flex items-center text-slate-700 dark:text-slate-300">
-              <Lock className="w-5 h-5 mr-2 text-cyan-600" />
-              GDPR Compliant
-            </div>
-            <div className="flex items-center text-slate-700 dark:text-slate-300">
-              <Lock className="w-5 h-5 mr-2 text-cyan-600" />
-              ISO 27001 Certified
-            </div>
-            <div className="flex items-center text-slate-700 dark:text-slate-300">
-              <Lock className="w-5 h-5 mr-2 text-cyan-600" />
-              SOC 2 Type II
-            </div>
-            <div className="flex items-center text-slate-700 dark:text-slate-300">
-              <Shield className="w-5 h-5 mr-2 text-cyan-600" />
-              99.9% Uptime SLA
-            </div>
+              </motion.div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-900 dark:to-blue-900 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
-          <p className="text-xl text-white/80 mb-8 max-w-3xl mx-auto">
-            Choose the plan that works for your business and start your 14-day free trial today.
+      <section className="py-20 bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Get Started?</h2>
+          <p className="text-xl mb-10 text-blue-100">
+            Join thousands of businesses that trust our platform for their growth
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <button
-              onClick={() => handleSelectPlan(plans[1])} // Pro plan
-              className="px-6 py-3 bg-white text-cyan-600 rounded-lg font-semibold hover:bg-cyan-50 transition duration-300 shadow-lg transform hover:scale-[1.02]"
-            >
-              Start Free Trial
-            </button>
-            <button
-              onClick={() => handleSelectPlan(plans[3])} // Enterprise plan
-              className="px-6 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white/10 transition duration-300"
-            >
-              Contact Sales
-            </button>
-          </div>
+          <a
+            href="#pricing"
+            className="inline-block bg-white text-blue-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+          >
+            Choose Your Plan
+          </a>
         </div>
-      </div>
+      </section>
 
-      {/* Payment Modal */}
-      <AnimatePresence>
-        {showPaymentModal && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
-              onClick={() => !isProcessing && !paymentComplete && setShowPaymentModal(false)}
-            />
-            <motion.div
-              ref={modalRef}
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-800 rounded-xl shadow-2xl z-50 overflow-hidden max-h-[90vh] overflow-y-auto"
-            >
-              {/* Header */}
-              <div className="sticky top-0 z-10 bg-white dark:bg-slate-800 p-6 border-b border-slate-200 dark:border-slate-700">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                    {paymentComplete
-                      ? "Payment Successful"
-                      : paymentStep === 1
-                        ? "Subscription Details"
-                        : "Payment Information"}
-                  </h3>
-                  {!isProcessing && !paymentComplete && (
-                    <button
-                      onClick={() => setShowPaymentModal(false)}
-                      className="text-slate-400 hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-400"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  )}
-                </div>
-              </div>
+      
 
-              {/* Content */}
-              <div className="p-6">
-                {paymentComplete ? (
-                  <div className="text-center">
-                    <div className="mx-auto w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-6">
-                      <CheckCircle className="w-8 h-8 text-emerald-500" />
-                    </div>
-                    <h4 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
-                      Thank you for your subscription!
-                    </h4>
-                    <p className="text-slate-600 dark:text-slate-400 mb-6">
-                      Your {selectedPlan.name} plan is now active. You'll receive a confirmation email shortly.
-                    </p>
-                    <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 mb-6 text-left">
-                      <div className="flex justify-between mb-2">
-                        <span className="text-slate-600 dark:text-slate-400">Plan</span>
-                        <span className="font-medium text-slate-900 dark:text-white">{selectedPlan.name}</span>
-                      </div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-slate-600 dark:text-slate-400">Billing</span>
-                        <span className="font-medium text-slate-900 dark:text-white">
-                          {isYearly ? "Yearly" : "Monthly"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-slate-600 dark:text-slate-400">Amount</span>
-                        <span className="font-medium text-slate-900 dark:text-white">{getCurrentPlanPrice()}</span>
-                      </div>
-                      <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-600">
-                        <span className="font-medium text-slate-900 dark:text-white">Order ID</span>
-                        <span className="font-medium text-slate-900 dark:text-white">
-                          #{Math.random().toString(36).substring(2, 10).toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setShowPaymentModal(false)}
-                      className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-all duration-300"
-                    >
-                      Continue to Dashboard
-                    </button>
-                  </div>
-                ) : isProcessing ? (
-                  <div className="text-center py-8">
-                    <div className="flex justify-center mb-6">
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                        className="w-12 h-12 border-4 border-cyan-200 border-t-cyan-600 rounded-full"
-                      />
-                    </div>
-                    <h4 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Processing Payment</h4>
-                    <p className="text-slate-600 dark:text-slate-400">Please wait while we process your payment...</p>
-                  </div>
-                ) : paymentStep === 1 ? (
-                  <form onSubmit={handlePaymentSubmit}>
-                    <div className="mb-6">
-                      <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 mb-6">
-                        <div className="flex items-center mb-4">
-                          <div className="p-2 rounded-full bg-cyan-100 dark:bg-cyan-900/30 mr-3">
-                            {selectedPlan.icon}
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-slate-900 dark:text-white">{selectedPlan.name} Plan</h4>
-                            <p className="text-sm text-slate-500 dark:text-slate-400">
-                              Billed {isYearly ? "yearly" : "monthly"}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex justify-between mb-2">
-                          <span className="text-slate-600 dark:text-slate-400">Subscription</span>
-                          <span className="font-medium text-slate-900 dark:text-white">{getCurrentPlanPrice()}</span>
-                        </div>
-                        {isYearly && (
-                          <div className="flex justify-between mb-2 text-emerald-600 dark:text-emerald-400 text-sm">
-                            <span>Yearly discount</span>
-                            <span>-20%</span>
-                          </div>
-                        )}
-                        <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-600 font-semibold">
-                          <span className="text-slate-900 dark:text-white">Total</span>
-                          <span className="text-slate-900 dark:text-white">{getCurrentPlanPrice()}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                            Email Address
-                          </label>
-                          <input
-                            type="email"
-                            required
-                            value={billingDetails.email}
-                            onChange={(e) => setBillingDetails({ ...billingDetails, email: e.target.value })}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                            placeholder="your@email.com"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={billingDetails.name}
-                            onChange={(e) => setBillingDetails({ ...billingDetails, name: e.target.value })}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                            placeholder="John Doe"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center mb-6">
-                      <input
-                        type="checkbox"
-                        id="terms"
-                        required
-                        className="w-4 h-4 text-cyan-600 border-slate-300 rounded focus:ring-cyan-500"
-                      />
-                      <label htmlFor="terms" className="ml-2 text-sm text-slate-600 dark:text-slate-400">
-                        I agree to the{" "}
-                        <a href="#" className="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400">
-                          Terms of Service
-                        </a>{" "}
-                        and{" "}
-                        <a href="#" className="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400">
-                          Privacy Policy
-                        </a>
-                      </label>
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-all duration-300 flex items-center justify-center"
-                    >
-                      Continue to Payment <ArrowRight className="ml-2 w-4 h-4" />
-                    </button>
-                  </form>
-                ) : (
-                  <form onSubmit={handlePaymentSubmit}>
-                    <div className="mb-6">
-                      <h4 className="font-medium text-slate-900 dark:text-white mb-4">Payment Method</h4>
-                      <div className="grid grid-cols-3 gap-3 mb-6">
-                        {paymentMethods.map((method) => (
-                          <button
-                            key={method.id}
-                            type="button"
-                            onClick={() => setPaymentMethod(method.id)}
-                            className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all ${
-                              paymentMethod === method.id
-                                ? "border-cyan-500 bg-cyan-50 dark:bg-cyan-900/20"
-                                : "border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-700"
-                            }`}
-                          >
-                            <div className="mb-2">{method.icon}</div>
-                            <span className="text-sm font-medium text-slate-900 dark:text-white">{method.name}</span>
-                          </button>
-                        ))}
-                      </div>
-
-                      {paymentMethod === "card" && (
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                              Card Number
-                            </label>
-                            <input
-                              type="text"
-                              required
-                              value={cardDetails.number}
-                              onChange={(e) =>
-                                setCardDetails({ ...cardDetails, number: formatCardNumber(e.target.value) })
-                              }
-                              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                              placeholder="4242 4242 4242 4242"
-                              maxLength={19}
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                              Cardholder Name
-                            </label>
-                            <input
-                              type="text"
-                              required
-                              value={cardDetails.name}
-                              onChange={(e) => setCardDetails({ ...cardDetails, name: e.target.value })}
-                              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                              placeholder="John Doe"
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                                Expiry Date
-                              </label>
-                              <input
-                                type="text"
-                                required
-                                value={cardDetails.expiry}
-                                onChange={(e) =>
-                                  setCardDetails({ ...cardDetails, expiry: formatExpiryDate(e.target.value) })
-                                }
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                                placeholder="MM/YY"
-                                maxLength={5}
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                                CVC
-                              </label>
-                              <input
-                                type="text"
-                                required
-                                value={cardDetails.cvc}
-                                onChange={(e) =>
-                                  setCardDetails({
-                                    ...cardDetails,
-                                    cvc: e.target.value.replace(/\D/g, "").substring(0, 3),
-                                  })
-                                }
-                                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                                placeholder="123"
-                                maxLength={3}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {paymentMethod === "paypal" && (
-                        <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 text-center">
-                          <p className="text-slate-600 dark:text-slate-400 mb-2">
-                            You'll be redirected to PayPal to complete your payment.
-                          </p>
-                        </div>
-                      )}
-
-                      {paymentMethod === "bank" && (
-                        <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                          <p className="text-slate-600 dark:text-slate-400 mb-2">
-                            Please use the following details for bank transfer:
-                          </p>
-                          <div className="space-y-1 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-slate-500 dark:text-slate-400">Account Name:</span>
-                              <span className="font-medium text-slate-900 dark:text-white">Tech Company Inc.</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-500 dark:text-slate-400">Account Number:</span>
-                              <span className="font-medium text-slate-900 dark:text-white">1234567890</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-500 dark:text-slate-400">Routing Number:</span>
-                              <span className="font-medium text-slate-900 dark:text-white">987654321</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-500 dark:text-slate-400">Bank Name:</span>
-                              <span className="font-medium text-slate-900 dark:text-white">Global Bank</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-500 dark:text-slate-400">Reference:</span>
-                              <span className="font-medium text-slate-900 dark:text-white">
-                                SUB-{Math.random().toString(36).substring(2, 10).toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 mb-6">
-                      <div className="flex justify-between mb-2">
-                        <span className="text-slate-600 dark:text-slate-400">Subscription</span>
-                        <span className="font-medium text-slate-900 dark:text-white">{getCurrentPlanPrice()}</span>
-                      </div>
-                      <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-600 font-semibold">
-                        <span className="text-slate-900 dark:text-white">Total</span>
-                        <span className="text-slate-900 dark:text-white">{getCurrentPlanPrice()}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-center mb-6">
-                      <Lock className="w-4 h-4 text-slate-400 mr-2" />
-                      <span className="text-sm text-slate-500 dark:text-slate-400">
-                        Secure payment processed with 256-bit encryption
-                      </span>
-                    </div>
-
-                    <div className="flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setPaymentStep(1)}
-                        className="flex-1 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-                      >
-                        Back
-                      </button>
-                      <button
-                        type="submit"
-                        className="flex-1 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-lg font-semibold transition-all duration-300"
-                      >
-                        Complete Payment
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* Payment Gateway Modal */}
+      <PaymentGatewayModal
+        isOpen={!!selectedPlan}
+        onClose={() => setSelectedPlan(null)}
+        plan={selectedPlan || {}}
+        isAnnual={isAnnual}
+      />
     </div>
   )
 }

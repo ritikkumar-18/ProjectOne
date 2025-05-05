@@ -10,16 +10,16 @@ import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import Subscriptions from './pages/Subscriptions';
 import Footer from './components/Footer';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
+import Cards from './pages/Cards';
 
 const App = () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <Navbar />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <><Header /></>}/>
+        <Route path="/"element={<><Header /></>}/>
         <Route path="/home" element={<Header/>} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/software" element={<Products section="software" />} />
@@ -31,7 +31,10 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/login" element={<Login />} />
+        <Route path='/profile' element={<Profile/>} />
       </Routes>
+      <Cards/>
       <Footer/>
     </div>
   );

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
 import { Search, Filter, ChevronDown, Star, ShoppingCart, Heart, BarChart2, CheckCircle, RefreshCw, X, Plus, Minus, CreditCard, ArrowRight, Check, ShoppingBag } from 'lucide-react'
@@ -40,6 +38,17 @@ const Products = ({ section }) => {
       category: activeSection !== "all" ? activeSection : "",
     }))
   }, [activeSection])
+  useEffect(() => {
+      // Ensure the scroll happens after the component mounts
+      const scrollToTop = () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        });
+      };
+      const timer = setTimeout(scrollToTop, 0);
+      return () => clearTimeout(timer);
+    }, []);
 
   // Close modals when clicking outside
   useEffect(() => {

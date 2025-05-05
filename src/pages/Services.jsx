@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight, Check, ChevronDown, Code, Database, Globe, Lock, MessageSquare, Server, Settings, Smartphone, Zap } from 'lucide-react';
 
 const Services = () => {
@@ -135,6 +135,14 @@ const Services = () => {
   const toggleFaq = (index) => {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
+  useEffect(() => {
+    
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+      });
+      
+    }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -308,23 +316,7 @@ const Services = () => {
         </div>
       </div>
 
-      {/* CTA Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-500 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Transform Your Business?</h2>
-          <p className="text-xl text-purple-100 max-w-3xl mx-auto mb-8">
-            Contact us today to discuss how our services can help you achieve your technology goals.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <button className="px-8 py-3 rounded-full bg-white text-purple-600 font-medium hover:bg-gray-100 transition-all shadow-lg">
-              Schedule a Consultation
-            </button>
-            <button className="px-8 py-3 rounded-full bg-transparent text-white font-medium border border-white hover:bg-white/10 transition-all">
-              View Case Studies
-            </button>
-          </div>
-        </div>
-      </div>
+     
     </div>
   );
 };
