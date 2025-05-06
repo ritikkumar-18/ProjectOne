@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
-import { Search, Filter, ChevronDown, Star, ShoppingCart, Heart, BarChart2, CheckCircle, RefreshCw, X, Plus, Minus, CreditCard, ArrowRight, Check, ShoppingBag } from 'lucide-react'
+import { Search, Filter, ChevronDown, Star, ShoppingCart, Heart, BarChart2, CheckCircle, RefreshCw, X, Plus, Minus, ArrowRight, Check, ShoppingBag } from 'lucide-react'
 import { motion, AnimatePresence } from "framer-motion"
 
 const Products = ({ section }) => {
@@ -22,14 +22,8 @@ const Products = ({ section }) => {
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(false)
   const [showCheckout, setShowCheckout] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState("")
-  const [showPaymentConfirmation, setShowPaymentConfirmation] = useState(false)
-  const [paymentSuccess, setPaymentSuccess] = useState(false)
-  const [pinInput, setPinInput] = useState("")
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const cartRef = useRef(null)
   const checkoutRef = useRef(null)
-  const paymentRef = useRef(null)
 
   // Update category filter when section changes
   useEffect(() => {
@@ -38,17 +32,18 @@ const Products = ({ section }) => {
       category: activeSection !== "all" ? activeSection : "",
     }))
   }, [activeSection])
+
   useEffect(() => {
-      // Ensure the scroll happens after the component mounts
-      const scrollToTop = () => {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        });
-      };
-      const timer = setTimeout(scrollToTop, 0);
-      return () => clearTimeout(timer);
-    }, []);
+    // Ensure the scroll happens after the component mounts
+    const scrollToTop = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
+    }
+    const timer = setTimeout(scrollToTop, 0)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Close modals when clicking outside
   useEffect(() => {
@@ -59,16 +54,13 @@ const Products = ({ section }) => {
       if (checkoutRef.current && !checkoutRef.current.contains(event.target) && showCheckout) {
         setShowCheckout(false)
       }
-      if (paymentRef.current && !paymentRef.current.contains(event.target) && showPaymentConfirmation) {
-        setShowPaymentConfirmation(false)
-      }
     }
 
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [showCart, showCheckout, showPaymentConfirmation])
+  }, [showCart, showCheckout])
 
   // Cart functions
   const addToCart = (product) => {
@@ -124,32 +116,6 @@ const Products = ({ section }) => {
     setShowCheckout(true)
   }
 
-  const handlePayment = (method) => {
-    setPaymentMethod(method)
-    setShowPaymentConfirmation(true)
-  }
-
-  const processPayment = () => {
-    if (pinInput.length < 4) return
-    
-    setIsProcessingPayment(true)
-    
-    // Simulate payment processing
-    setTimeout(() => {
-      setIsProcessingPayment(false)
-      setPaymentSuccess(true)
-      
-      // Reset after successful payment
-      setTimeout(() => {
-        setShowPaymentConfirmation(false)
-        setShowCheckout(false)
-        setCart([])
-        setPinInput("")
-        setPaymentSuccess(false)
-      }, 3000)
-    }, 2000)
-  }
-
   const toggleWishlist = (productId) => {
     setWishlistedItems((prev) => ({
       ...prev,
@@ -191,15 +157,6 @@ const Products = ({ section }) => {
     { id: "priceAsc", name: "Price: Low to High" },
     { id: "priceDesc", name: "Price: High to Low" },
     { id: "rating", name: "Highest Rated" },
-  ]
-
-  // Payment methods
-  const paymentMethods = [
-    { id: "gpay", name: "Google Pay", icon: "/images/gpay.png" },
-    { id: "paytm", name: "Paytm", icon: "/images/paytm.png" },
-    { id: "phonepe", name: "PhonePe", icon: "/images/phonepe.png" },
-    { id: "upi", name: "Other UPI", icon: "/images/upi.png" },
-    { id: "card", name: "Credit/Debit Card", icon: "/images/card.png" },
   ]
 
   // Product data with real images
@@ -1225,265 +1182,7 @@ const Products = ({ section }) => {
         )}
       </AnimatePresence>
 
-      {/* Checkout Modal */}
-      <AnimatePresence>
-        {showCheckout && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-              onClick={() => setShowCheckout(false)}
-            />
-            <motion.div
-              ref={checkoutRef}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-2xl z-50 overflow-hidden"
-            >
-              <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Checkout</h2>
-                <button 
-                  onClick={() => setShowCheckout(false)}
-                  className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <X className="h-5 w-5 text-slate-500 dark:text-slate-400" />
-                </button>
-              </div>
-
-              <div className="p-6">
-                <div className="mb-6">
-                  <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">Order Summary</h3>
-                  <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 mb-4">
-                    <div className="max-h-40 overflow-y-auto mb-4">
-                      {cart.map((item) => (
-                        <div key={item.id} className="flex justify-between items-center mb-2">
-                          <div className="flex items-center">
-                            <img 
-                              src={item.image || "/placeholder.svg"} 
-                              alt={item.name} 
-                              className="w-10 h-10 object-cover rounded-md mr-2"
-                            />
-                            <span className="text-sm text-slate-700 dark:text-slate-300">
-                              {item.name} <span className="text-slate-500 dark:text-slate-400">x{item.quantity}</span>
-                            </span>
-                          </div>
-                          <span className="text-sm font-medium text-slate-900 dark:text-white">
-                            ${(item.price * item.quantity).toLocaleString()}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-3">
-                      <div className="flex justify-between mb-1">
-                        <span className="text-slate-600 dark:text-slate-400">Subtotal</span>
-                        <span className="font-medium text-slate-900 dark:text-white">${getCartTotal().toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-slate-600 dark:text-slate-400">Shipping</span>
-                        <span className="font-medium text-slate-900 dark:text-white">Free</span>
-                      </div>
-                      <div className="flex justify-between text-lg font-bold">
-                        <span className="text-slate-900 dark:text-white">Total</span>
-                        <span className="text-slate-900 dark:text-white">${getCartTotal().toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">Select Payment Method</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {paymentMethods.map((method) => (
-                      <button
-                        key={method.id}
-                        onClick={() => handlePayment(method.id)}
-                        className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all duration-200 ${
-                          paymentMethod === method.id
-                            ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20"
-                            : "border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-700"
-                        }`}
-                      >
-                        <img src={method.icon || "/placeholder.svg"} alt={method.name} className="h-10 w-10 object-contain mb-2" />
-                        <span className="text-sm font-medium text-slate-900 dark:text-white">{method.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <button 
-                  onClick={() => handlePayment("gpay")}
-                  className="w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-md flex items-center justify-center gap-2"
-                >
-                  <CreditCard className="h-5 w-5" /> Pay ${getCartTotal().toLocaleString()}
-                </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Payment Confirmation Modal */}
-      <AnimatePresence>
-        {showPaymentConfirmation && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
-              onClick={() => !isProcessingPayment && !paymentSuccess && setShowPaymentConfirmation(false)}
-            />
-            <motion.div
-              ref={paymentRef}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-white dark:bg-slate-900 rounded-xl shadow-2xl z-50 overflow-hidden"
-            >
-              {paymentSuccess ? (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="p-6 flex flex-col items-center text-center"
-                >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", damping: 15, stiffness: 200, delay: 0.2 }}
-                    className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4"
-                  >
-                    <Check className="h-8 w-8 text-emerald-500" />
-                  </motion.div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Payment Successful!</h3>
-                  <p className="text-slate-600 dark:text-slate-400 mb-6">
-                    Your order has been placed successfully. You will receive a confirmation email shortly.
-                  </p>
-                  <div className="w-full bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 mb-6">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-slate-600 dark:text-slate-400">Order ID</span>
-                      <span className="font-medium text-slate-900 dark:text-white">#{Math.floor(Math.random() * 1000000)}</span>
-                    </div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-slate-600 dark:text-slate-400">Amount Paid</span>
-                      <span className="font-medium text-slate-900 dark:text-white">${getCartTotal().toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-400">Payment Method</span>
-                      <span className="font-medium text-slate-900 dark:text-white">
-                        {paymentMethods.find(m => m.id === paymentMethod)?.name || "Card"}
-                      </span>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => {
-                      setShowPaymentConfirmation(false)
-                      setShowCheckout(false)
-                      setCart([])
-                      setPaymentSuccess(false)
-                    }}
-                    className="w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-lg font-semibold transition-all duration-300"
-                  >
-                    Continue Shopping
-                  </button>
-                </motion.div>
-              ) : isProcessingPayment ? (
-                <div className="p-6 flex flex-col items-center text-center">
-                  <div className="w-16 h-16 mb-4 flex items-center justify-center">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full"
-                    />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Processing Payment</h3>
-                  <p className="text-slate-600 dark:text-slate-400 mb-4">
-                    Please wait while we process your payment...
-                  </p>
-                </div>
-              ) : (
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">Confirm Payment</h3>
-                    <button 
-                      onClick={() => setShowPaymentConfirmation(false)}
-                      className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                    >
-                      <X className="h-5 w-5 text-slate-500 dark:text-slate-400" />
-                    </button>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <div className="flex items-center justify-center mb-4">
-                      <img 
-                        src={paymentMethods.find(m => m.id === paymentMethod)?.icon || "/images/gpay.png"} 
-                        alt="Payment Method" 
-                        className="h-12 w-12 object-contain"
-                      />
-                    </div>
-                    <p className="text-center text-slate-600 dark:text-slate-400 mb-4">
-                      Enter your {paymentMethods.find(m => m.id === paymentMethod)?.name || "UPI"} PIN to complete the payment of <span className="font-bold text-slate-900 dark:text-white">${getCartTotal().toLocaleString()}</span>
-                    </p>
-                    
-                    <div className="flex justify-center mb-6">
-                      <div className="flex gap-2">
-                        {[...Array(4)].map((_, i) => (
-                          <div 
-                            key={i} 
-                            className="w-10 h-12 flex items-center justify-center border-2 border-slate-300 dark:border-slate-600 rounded-md"
-                          >
-                            {pinInput.length > i ? (
-                              <div className="w-3 h-3 rounded-full bg-slate-900 dark:bg-white"></div>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-3 gap-3 mb-4">
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, "", 0, "del"].map((num, i) => (
-                        <button
-                          key={i}
-                          onClick={() => {
-                            if (num === "del") {
-                              setPinInput(prev => prev.slice(0, -1))
-                            } else if (num !== "" && pinInput.length < 4) {
-                              setPinInput(prev => prev + num)
-                            }
-                          }}
-                          className={`h-12 rounded-lg font-medium text-lg flex items-center justify-center transition-colors ${
-                            num === "" 
-                              ? "cursor-default" 
-                              : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white"
-                          }`}
-                        >
-                          {num === "del" ? "⌫" : num}
-                        </button>
-                      ))}
-                    </div>
-                    
-                    <button 
-                      onClick={processPayment}
-                      disabled={pinInput.length < 4}
-                      className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 ${
-                        pinInput.length < 4
-                          ? "bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-                          : "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white transform hover:scale-[1.02] shadow-md"
-                      }`}
-                    >
-                      Pay Now
-                    </button>
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      
     </div>
   )
 }
