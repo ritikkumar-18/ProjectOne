@@ -54,9 +54,15 @@ import NotFound from "./pages/NotFound"
 import Subscriptions from "./pages/Subscriptions"
 import Login from "./pages/Login"
 import Profile from "./pages/Profile"
-
-import { useState } from "react"
 import Navbar from "./components/Navbar"
+import TechCard from "./pages/TechCard"
+import TermsAndConditions from "./pages/TermsandConditions"
+import SupportChat from "./pages/SupportChat"
+import Faq from "./pages/Faq"
+import PrivacyPolicy from "./pages/Privacy"
+import OurServices from "./pages/OurServices"
+
+
 
 
 function App() {
@@ -64,8 +70,8 @@ function App() {
     <>
     <Navbar />
       <Routes>
-        <Route path="/"element={<><Header /><Cards /></>}/>
-        <Route path="/home"element={<><Header /><Cards /></>}/>
+        <Route path="/"element={<><Header /><Cards /> <TechCard/><OurServices/></>}/>
+        <Route path="/home"element={<><Header /><Cards /> <TechCard/><OurServices/></>}/>
         <Route path="/products" element={<Products/>} />
         <Route path="/products/software" element={<Products section="software" />} />
         <Route path="/products/hardware" element={<Products section="hardware" />} />
@@ -76,7 +82,11 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
+        <Route path='/terms'element={<TermsAndConditions/>} />
+        <Route path='/support' element={<SupportChat/>} />
+        <Route path='/faq'element={<Faq/>} />
         <Route path="/login" element={<Login />} />
+        <Route path='/privacy'element={<PrivacyPolicy/>}/>
         <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
