@@ -8,7 +8,7 @@ const Services = () => {
   const [expandedFaq, setExpandedFaq] = useState(null)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [darkMode, setDarkMode] = useState(false)
-  const [notification, setNotification] = useState({ show: false, message: "", type: "" })
+  
 
   // Toggle dark mode
   useEffect(() => {
@@ -17,12 +17,7 @@ const Services = () => {
     document.documentElement.classList.toggle("dark", isDark)
   }, [])
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !darkMode
-    setDarkMode(newDarkMode)
-    localStorage.setItem("darkMode", newDarkMode.toString())
-    document.documentElement.classList.toggle("dark", newDarkMode)
-  }
+  
 
   const services = [
     {
