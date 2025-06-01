@@ -63,8 +63,6 @@ import PrivacyPolicy from "./pages/Privacy"
 import OurServices from "./pages/OurServices"
 
 
-
-
 function App() {
   return (
     <>
